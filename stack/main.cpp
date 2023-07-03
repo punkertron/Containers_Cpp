@@ -1,0 +1,15 @@
+#include <iostream>
+
+#include "stack.hpp"
+
+int main()
+{
+    ft::stack<int> i;
+    i.push(190);
+    std::cout << i.top() << std::endl;
+    i.push(80);
+    std::cout << i.top() << std::endl;
+    i.top() = 100;
+    std::cout << i.top() << std::endl;
+    return 0;
+}
