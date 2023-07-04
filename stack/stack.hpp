@@ -19,12 +19,20 @@ protected:
 
 public:
     
-    ~stack()
+    stack(): c() { }
+
+    ~stack() { }
+
+    stack(const stack &s): c(s.c) { }
+
+    stack(stack &&s): c(std::move(s.c)) { }
+
+    stack& operator=(stack &&s)
     {
-        ;
+        c = std::move(s.c);
+        return *this;
     }
-    
-    
+
     //Element access
     const value_type& top() const
     {

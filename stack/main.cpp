@@ -15,5 +15,19 @@ int main()
         std::cout << "H\n" << i.size() << std::endl;
     i.pop();
     std::cout << i.top() << '|' << i.size() << std::endl;
+
+    
+    std::cout << "i = " << i.top() << std::endl;
+    
+    ft::stack<int> k(std::move(i));
+
+    std::cout << "k = " << k.top() << std::endl;
+
+    ft::stack<int> p;
+
+    p = std::move(k);
+   //std::cout << "k = " << k.top() << std::endl;
+    std::cout << "p = " << p.top() << std::endl;
+
     return 0;
 }
