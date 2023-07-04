@@ -60,16 +60,27 @@ public:
     {
         c.push_back(val);
     }
-    //void push( value_type&& value );
+    
+    void push( value_type&& value )
+    {
+        c.push_back(std::move(value));
+    }
 
-    //template< class... Args >
-    //void emplace( Args&&... args );
+    template< class... Args >
+    void emplace( Args&&... args )
+    {
+        c.emplace_back(std::forward<Args>(args)...);
+    }
 
     void pop()
     {
         c.pop_back();
     }
-    //void swap( stack& other ) noexcept(/* see below */);
+    
+    void swap( stack& other ) //noexcept(/* see below */);
+    {
+        std::swap(c, other.c);
+    }
 
 };
 

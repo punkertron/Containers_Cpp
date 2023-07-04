@@ -28,6 +28,13 @@ int main()
     p = std::move(k);
    //std::cout << "k = " << k.top() << std::endl;
     std::cout << "p = " << p.top() << std::endl;
+    ft::stack<int> b;
+    b.push(42);
+    b.push(21);
+    b.push(19);
+    std::cout << "b size = " << b.size() << "\np size = " << p.size() << std::endl;
+    b.swap(p);
+    std::cout << "b size = " << b.size() << "\np size = " << p.size() << std::endl;
 
     return 0;
 }
