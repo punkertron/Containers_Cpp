@@ -19,13 +19,19 @@ protected:
 
 public:
     
-    stack(): c() { }
-
-    ~stack() { }
-
+    stack() = default;
+    explicit stack( const Container& cont ): c(cont) { }
+    explicit stack( Container&& cont ): c(std::move(cont)) { }
     stack(const stack &s): c(s.c) { }
-
     stack(stack &&s): c(std::move(s.c)) { }
+
+    ~stack() = default;
+
+    stack& operator=( const stack& other )
+    {
+        c = other.c;
+        return *this;
+    }
 
     stack& operator=(stack &&s)
     {
@@ -82,7 +88,54 @@ public:
         std::swap(c, other.c);
     }
 
+    template <class U, class F>
+    inline friend bool operator<(stack<U, F> &x, stack<U, F> &y);
+
+    template <class U, class F>
+    inline friend bool operator==(stack<U, F> &x, stack<U, F> &y);
+
 };
+
+template <class U, class F>
+inline bool operator<(stack<U, F> &x, stack<U, F> &y)
+{
+    return x.c < y.c;
+}
+
+//based on operator<
+template <class U, class F>
+inline bool operator<=(stack<U, F> &x, stack<U, F> &y)
+{
+    return !(y < x);
+}
+
+//based on operator<
+template <class U, class F>
+inline bool operator>=(stack<U, F> &x, stack<U, F> &y)
+{
+    return !(x < y);
+}
+
+//based on operator<
+template <class U, class F>
+inline bool operator>(stack<U, F> &x, stack<U, F> &y)
+{
+    return y < x;
+}
+
+template <class U, class F>
+inline bool operator==(stack<U, F> &x, stack<U, F> &y)
+{
+    return x.c == y.c;
+}
+
+//based on operator==
+template <class U, class F>
+inline bool operator!=(stack<U, F> &x, stack<U, F> &y)
+{
+    return !(x == y);
+}
+
 
 } //namespace ft
 

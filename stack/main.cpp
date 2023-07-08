@@ -36,5 +36,28 @@ int main()
     b.swap(p);
     std::cout << "b size = " << b.size() << "\np size = " << p.size() << std::endl;
 
+    
+    ft::stack<int> test1, test2;
+    test1.push(21);
+    test2.push(42);
+    test1.push(100);
+    if (test1 < test2)
+        std::cout << "test1 < test" << std::endl;
+    if (test2 > test1)
+        std::cout << "test2 > test1" << std::endl;
+
+    if (test1 == test2)
+        std::cout << "test1 == test" << std::endl;
+    if (test1 != test2)
+        std::cout << "test1 != test" << std::endl;
+    
+    test1.pop();
+    test1.pop();
+    test1.push(42);
+    if (test1 == test2)
+        std::cout << "test1 == test" << std::endl;
+    if (test1 != test2)
+        std::cout << "test1 != test" << std::endl;
+
     return 0;
 }
