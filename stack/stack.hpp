@@ -40,12 +40,12 @@ public:
     }
 
     //Element access
-    const value_type& top() const
+    reference top()
     {
         return c.back();
     }
-
-    value_type& top()
+    
+    const_reference top() const
     {
         return c.back();
     }
@@ -94,7 +94,7 @@ public:
     template <class U, class F>
     inline friend bool operator==(stack<U, F> &x, stack<U, F> &y);
 
-};
+}; // class stack
 
 template <class U, class F>
 inline bool operator<(stack<U, F> &x, stack<U, F> &y)
@@ -136,7 +136,6 @@ inline bool operator!=(stack<U, F> &x, stack<U, F> &y)
     return !(x == y);
 }
 
-
 } //namespace ft
 
-#endif //STACK_HPP
+#endif // STACK_HPP
