@@ -3,8 +3,18 @@
 #include "stack.hpp"
 #include "vector.hpp"
 
+void pointer_func(const int* p, std::size_t size)
+{
+    std::cout << "data = ";
+    for (std::size_t i = 0; i < size; ++i)
+        std::cout << p[i] << ' ';
+    std::cout << '\n';
+}
+
+
 int main()
 {
+    /*
     ft::stack<int> i;
     i.push(190);
     std::cout << i.top() << std::endl;
@@ -59,6 +69,42 @@ int main()
         std::cout << "test1 == test" << std::endl;
     if (test1 != test2)
         std::cout << "test1 != test" << std::endl;
+    */
+
+    ft::vector<int> v;
+    ft::vector<char> v2;
+    ft::vector<int> v3(4);
+    ft::vector<int> v4(15, 10);
+
+    for (int i = 0; i < v4.size(); ++i)
+        std::cout << v4[i] << ' ';
+    std::cout << std::endl;
+
+    std::cout << v.empty() << std::endl;
+    std::cout << v4.empty() << std::endl;
+    std::cout << v.max_size() << std::endl;
+    std::cout << v2.max_size() << std::endl;
+
+    try
+    {
+        v.at(0) = 1;
+    }
+    catch(const std::out_of_range &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    v4[0] = 1111;
+    v4.at(14) = 2222;
+
+    std::cout << v4.front() << std::endl;
+    std::cout << v4.back() << std::endl;
+    std::cout << v4.capacity() << std::endl;
+
+    pointer_func(v4.data(), v4.size());
+
+    if (!(v4.data()))
+        std::cout << "Invalid data" << std::endl;
 
     return 0;
 }
