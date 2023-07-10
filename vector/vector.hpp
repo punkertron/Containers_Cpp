@@ -10,8 +10,6 @@ namespace ft
 template <class T, class Allocator = std::allocator<T> >
 class vector
 {
-
-
 public:
     using value_type        = T;
     using allocator_type    = Allocator;
@@ -24,11 +22,15 @@ public:
     //using iterator          = 
     // ADD ITERATORS
 
+    using AllocTraits       = std::allocator_traits<Allocator>;
+
     ~vector()
     {
         while (m_size--)
-            m_alloc.destroy(m_arr + m_size);
-        m_alloc.deallocate(m_arr, m_capacity);
+            AllocTraits::destroy(m_alloc, m_arr + m_size);
+            //m_alloc.destroy(m_arr + m_size);
+        AllocTraits::deallocate(m_alloc, m_arr, m_capacity);
+        //m_alloc.deallocate(m_arr, m_capacity);
     }
 
     vector()
@@ -38,12 +40,15 @@ public:
         m_size = 0;
     }
 
-    vector( size_type count, const T& value, const Allocator& alloc = Allocator())
+    vector( size_type count, const T& value, const Allocator& alloc = Allocator()):
+        m_alloc(alloc)
     {
-        value_type* p = m_alloc.allocate(count * 2);
-        value_type* q = p;
+        pointer p = AllocTraits::allocate(m_alloc, count * 2);
+        //value_type* p = m_alloc.allocate(count * 2);
+        pointer q = p;
         while (q != p + count)
-            m_alloc.construct(q++, value);
+            AllocTraits::construct(m_alloc, q++, value);
+            //m_alloc.construct(q++, value);
         m_arr = p;
         m_size = count;
         m_capacity = 2 * count;
@@ -52,11 +57,13 @@ public:
     explicit vector( size_type count, const Allocator& alloc = Allocator() ):
         m_alloc(alloc)
     {
-        value_type* p = m_alloc.allocate(count * 2);
-        value_type* q = p;
+        pointer p = AllocTraits::allocate(m_alloc, count * 2);
+        //value_type* p = m_alloc.allocate(count * 2);
+        pointer q = p;
         value_type t;
         while (q != p + count)
-            m_alloc.construct(q++, t);
+            AllocTraits::construct(m_alloc, q++, t);
+            //m_alloc.construct(q++, t);
         m_arr = p;
         m_size = count;
         m_capacity = 2 * count;
@@ -141,6 +148,25 @@ public:
         return std::numeric_limits<difference_type>::max();
     }
 
+/*
+    void reserve( size_type new_cap )
+    {
+        if (m_capacity > new_cap)
+            return ;
+        if (new_cap > max_size())
+            throw std::length_error ("new_cap > max_size()");
+        
+        value_type *newarr = m_alloc.allocate(new_cap);
+
+        for (size_type i = 0; i < m_size; ++i)
+        {
+            newarr + i = std::move(m_arr + i);
+        }
+        m_alloc.deallocate(m_arr, m_capacity);
+        m_arr = newarr;
+    }
+*/
+
     size_type capacity() const noexcept
     {
         return m_capacity;
@@ -157,4 +183,4 @@ private:
 } // namespace ft
 
 
-#endif
+#endif // VECTOR_HPP

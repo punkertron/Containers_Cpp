@@ -106,5 +106,13 @@ int main()
     if (!(v4.data()))
         std::cout << "Invalid data" << std::endl;
 
+    auto ptr = v4.data();
+    std::cout << *ptr << std::endl;
+
+    //v4.reserve(100);
+    std::cout << *ptr << std::endl;
+
+
+
     return 0;
 }
