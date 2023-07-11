@@ -283,7 +283,6 @@ public:
         resize(count, t);
     }
 
-
 private:
     value_type* m_arr;
     size_type m_capacity;
