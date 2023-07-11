@@ -1,9 +1,12 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+#include <iostream>
+
 #include <memory>
 #include <limits>
 #include <stdexcept>
+#include <utility>
 
 namespace ft
 {
@@ -41,7 +44,7 @@ public:
     }
 
     vector( size_type count, const T& value, const Allocator& alloc = Allocator()):
-        m_alloc(alloc)
+        m_alloc(std::move(alloc))
     {
         pointer p = AllocTraits::allocate(m_alloc, count * 2);
         //value_type* p = m_alloc.allocate(count * 2);
@@ -55,7 +58,7 @@ public:
     }
 
     explicit vector( size_type count, const Allocator& alloc = Allocator() ):
-        m_alloc(alloc)
+        m_alloc(std::move(alloc))
     {
         pointer p = AllocTraits::allocate(m_alloc, count * 2);
         //value_type* p = m_alloc.allocate(count * 2);
@@ -67,6 +70,35 @@ public:
         m_arr = p;
         m_size = count;
         m_capacity = 2 * count;
+    }
+
+
+    vector(vector&& other):
+        m_arr(other.m_arr), m_size(other.m_size), m_capacity(other.m_capacity),
+        m_alloc(std::move(other.m_alloc))
+    {
+        other.m_arr = nullptr;
+        other.m_size = 0;
+        other.m_capacity = 0;
+    }
+
+    vector& operator=(vector&& other)
+    {
+        if (this == &other)
+            return *this;
+
+        while (m_size--)
+            AllocTraits::destroy(m_alloc, m_arr + m_size);
+        AllocTraits::deallocate(m_alloc, m_arr, m_capacity);
+        
+        m_arr = other.m_arr;
+        m_size = other.m_size;
+        m_capacity = other.m_capacity;
+        m_alloc = std::move(other.m_alloc);
+        other.m_arr = nullptr;
+        other.m_size = 0;
+        other.m_capacity = 0;
+        return *this;
     }
 
 
@@ -129,8 +161,25 @@ public:
 
     void push_back(const value_type &val)
     {
-        
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size == m_capacity)
+            reserve(m_capacity * 2);
+        AllocTraits::construct(m_alloc, m_arr + m_size, val);
+        ++m_size;
     }
+
+    void push_back(value_type &&val)
+    {
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size == m_capacity)
+            reserve(m_capacity * 2);
+        AllocTraits::construct(m_alloc, m_arr + m_size, std::move(val));
+        std::cout << "Here!\n";
+        ++m_size;
+    }
+
 
     // Capacity
     bool empty() const noexcept
@@ -148,7 +197,6 @@ public:
         return std::numeric_limits<difference_type>::max();
     }
 
-/*
     void reserve( size_type new_cap )
     {
         if (m_capacity > new_cap)
@@ -156,16 +204,16 @@ public:
         if (new_cap > max_size())
             throw std::length_error ("new_cap > max_size()");
         
-        value_type *newarr = m_alloc.allocate(new_cap);
+        pointer newarr = AllocTraits::allocate(m_alloc, new_cap);
 
         for (size_type i = 0; i < m_size; ++i)
         {
-            newarr + i = std::move(m_arr + i);
+            AllocTraits::construct(m_alloc, newarr + i, std::move(*(m_arr + i)));
         }
         m_alloc.deallocate(m_arr, m_capacity);
         m_arr = newarr;
+        m_capacity = new_cap;
     }
-*/
 
     size_type capacity() const noexcept
     {

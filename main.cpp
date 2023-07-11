@@ -109,10 +109,28 @@ int main()
     auto ptr = v4.data();
     std::cout << *ptr << std::endl;
 
-    //v4.reserve(100);
-    std::cout << *ptr << std::endl;
+    v4.reserve(100);
+    std::cout << "capacity = " << v4.capacity() << std::endl;
+    v4.reserve(10000);
+    std::cout << v4.capacity() << std::endl;
+    pointer_func(v4.data(), v4.size());
 
+    ft::vector<int> v5(std::move(v4));
+    pointer_func(v4.data(), v4.size());
+    pointer_func(v5.data(), v5.size());
 
+    v = std::move(v5);
+    v = std::move(v);
+    pointer_func(v5.data(), v5.size());
+    pointer_func(v.data(), v.size());
+
+    ft::vector<int> v6;
+
+    for (int i = 0; i < 11; ++i)
+    {
+        v6.push_back(i);
+        std::cout << "size = " << v6.size() << " | capacity = " << v6.capacity() << std::endl;
+    }
 
     return 0;
 }
