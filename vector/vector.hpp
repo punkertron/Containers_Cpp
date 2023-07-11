@@ -284,7 +284,6 @@ public:
     }
 
 
-
 private:
     value_type* m_arr;
     size_type m_capacity;
