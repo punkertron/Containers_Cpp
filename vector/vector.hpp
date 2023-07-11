@@ -72,6 +72,18 @@ public:
         m_capacity = 2 * count;
     }
 
+    vector( const vector& other ):
+        m_size(other.m_size), m_capacity(other.m_capacity), m_alloc(other.m_alloc)
+    {
+        pointer p = AllocTraits::allocate(m_alloc, m_capacity);
+        size_type i = 0;
+        while (i < m_size)
+        {
+            AllocTraits::construct(m_alloc, p + i, *(other.m_arr + i));
+            ++i;
+        }
+        m_arr = p;
+    }
 
     vector(vector&& other):
         m_arr(other.m_arr), m_size(other.m_size), m_capacity(other.m_capacity),
@@ -176,7 +188,6 @@ public:
         if (m_size == m_capacity)
             reserve(m_capacity * 2);
         AllocTraits::construct(m_alloc, m_arr + m_size, std::move(val));
-        std::cout << "Here!\n";
         ++m_size;
     }
 
@@ -210,7 +221,8 @@ public:
         {
             AllocTraits::construct(m_alloc, newarr + i, std::move(*(m_arr + i)));
         }
-        m_alloc.deallocate(m_arr, m_capacity);
+        AllocTraits::deallocate(m_alloc, m_arr, m_capacity);
+        //m_alloc.deallocate(m_arr, m_capacity);
         m_arr = newarr;
         m_capacity = new_cap;
     }
@@ -220,12 +232,125 @@ public:
         return m_capacity;
     }
 
+    void shrink_to_fit()
+    {
+        if (m_capacity > m_size)
+        {
+            pointer newarr = AllocTraits::allocate(m_alloc, m_size);
+            for (size_type i = 0; i < m_size; ++i)
+            {
+                AllocTraits::construct(m_alloc, newarr + i, std::move(*(m_arr + i)));
+            }
+            AllocTraits::deallocate(m_alloc, m_arr, m_capacity);
+            m_arr = newarr;
+            m_capacity = m_size;
+        }
+    }
+
+
+
+    // Modifiers
+    void clear() noexcept
+    {
+        std::cout << m_size << std::endl;
+        while (m_size--)
+            AllocTraits::destroy(m_alloc, m_arr + m_size);
+        m_size = 0;
+    }
+
+    void pop_back()
+    {
+        --m_size;
+        AllocTraits::destroy(m_alloc, m_arr + m_size);
+    }
+
+    void resize( size_type count, const value_type& value )
+    {
+        while (count < m_size)
+        {
+            --m_size;
+            AllocTraits::destroy(m_alloc, m_arr + m_size);
+        }
+        while (count > m_size)
+        {
+            push_back(value);
+        }
+    }
+
+    void resize( size_type count )
+    {
+        value_type t;
+        resize(count, t);
+    }
+
+
+
+
 private:
     value_type* m_arr;
     size_type m_capacity;
     size_type m_size;
     allocator_type m_alloc;
 };
+
+template< class T, class Alloc >
+bool operator==( const vector<T, Alloc>& lhs,
+                 const vector<T, Alloc>& rhs )
+{
+    typename vector<T, Alloc>::size_type i = 0, lhs_n = lhs.size(), rhs_n = rhs.size();
+
+    if (lhs_n != rhs_n)
+        return false;
+    while (i < lhs_n && i < rhs_n)
+    {
+        if (lhs[i] != rhs[i])
+        {
+            return false;
+        }
+        ++i;
+    }
+    return true;
+}
+
+template< class T, class Alloc >
+bool operator<( const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs )
+{
+    typename vector<T, Alloc>::size_type i = 0, lhs_n = lhs.size(), rhs_n = rhs.size();
+    
+    while (i < lhs_n && i < rhs_n)
+    {
+        if (lhs[i] < rhs[i])
+        {
+            return true;
+        }
+        ++i;
+    }
+    if (lhs_n < rhs_n)
+        return true;
+    return false;
+}
+
+template< class T, class Alloc >
+bool operator>( const vector<T, Alloc>& lhs,
+                const vector<T, Alloc>& rhs )
+{
+    return operator<(rhs, lhs);
+}
+
+template< class T, class Alloc >
+bool operator>=( const vector<T, Alloc>& lhs,
+                 const vector<T, Alloc>& rhs )
+{
+    return operator<(rhs, lhs) || operator==(rhs, lhs);
+}
+
+template< class T, class Alloc >
+bool operator<=( const vector<T, Alloc>& lhs,
+                 const vector<T, Alloc>& rhs )
+{
+    return operator<(lhs, rhs) || operator==(lhs, rhs);
+}
 
 
 } // namespace ft

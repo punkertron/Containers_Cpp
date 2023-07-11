@@ -126,11 +126,60 @@ int main()
 
     ft::vector<int> v6;
 
-    for (int i = 0; i < 11; ++i)
+    for (int i = 0; i < 21; ++i)
     {
         v6.push_back(i);
         std::cout << "size = " << v6.size() << " | capacity = " << v6.capacity() << std::endl;
     }
+
+    std::cout << v6.size() << std::endl;
+    v6.clear();
+    std::cout << v6.size() << std::endl;
+    std::cout << v6.capacity() << std::endl;
+
+    pointer_func(v.data(), v.size());
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+    v.resize(14);
+    pointer_func(v.data(), v.size());
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+    v.resize(16);
+    pointer_func(v.data(), v.size());
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+
+    v.shrink_to_fit();
+    pointer_func(v.data(), v.size());
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+
+
+    std::cout << (v == v6) << std::endl;
+    ft::vector<int> v7(v);
+    pointer_func(v7.data(), v7.size());
+    std::cout << (v == v7) << std::endl;
+
+    ft::vector<double> v8, v9;
+    for (int i = 0; i < 6; ++i)
+    {
+        v8.push_back(i / 3.0);
+        v9.push_back(i / 3.0);
+    }
+    std::cout << "(v8 < v9) = " << (v8 < v9) << std::endl;
+    v9.push_back(19);
+    std::cout << "(v8 < v9 after push_back) = " << (v8 < v9) << std::endl;
+    v9.pop_back();
+    v9.pop_back();
+    std::cout << "(v9 after 2 pop_back < v8) = " << (v9 < v8) << std::endl;
+    std::cout << (v9 <= v8) << std::endl;
+    std::cout << (v9 > v8) << std::endl;
+    v8.pop_back();
+    v8.pop_back();
+    std::cout << (v9 > v8) << std::endl;
+    std::cout << (v9 >= v8) << std::endl;
+    
+
 
     return 0;
 }
