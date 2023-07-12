@@ -2,6 +2,7 @@
 #define VECTOR_ITERATOR_HPP
 
 #include <iterator>
+#include <type_traits>
 
 namespace ft {
 
@@ -17,11 +18,25 @@ public:
     using reference         = typename T::reference;
 
     using size_type         = typename T::size_type;
+    using const_pointer     = typename T::const_pointer;
+    using const_reference   = typename T::const_reference;
 
     vec_iterator(pointer ptr): m_ptr(ptr)
     {
         ;
     }
+
+    vec_iterator<value_type>& operator=(const vec_iterator<value_type>& other) = default;
+    // {
+    //     this->m_ptr = other.m_ptr;
+    //     return *this;
+    // }
+
+    // vec_iterator& operator=(vec_iterator *other)
+    // {
+    //     this->m_ptr = other->m_ptr;
+    //     return *this;
+    // }
 
     vec_iterator& operator++()
     {
@@ -64,6 +79,21 @@ public:
         return *(m_ptr + pos);
     }
 
+    const_pointer operator->() const
+    {
+        return m_ptr;
+    }
+
+    const_reference operator*() const
+    {
+        return *m_ptr;
+    }
+
+    const_reference operator[](size_type pos) const
+    {
+        return *(m_ptr + pos);
+    }
+
     bool operator==(const vec_iterator& other)
     {
         return m_ptr == other.m_ptr;
@@ -76,6 +106,7 @@ public:
 
 private:
     pointer m_ptr;
+
 };
 
 

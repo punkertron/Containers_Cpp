@@ -24,7 +24,8 @@ public:
     using const_pointer     = typename std::allocator_traits<Allocator>::const_pointer;
     
     using iterator          = vec_iterator<vector<value_type, allocator_type> >;
-    
+    using const_iterator    = vec_iterator<vector<const value_type, allocator_type> >;
+
     //using iterator          = 
     // ADD ITERATORS
 
@@ -295,6 +296,16 @@ public:
     iterator end()
     {
         return iterator(m_arr + m_size);
+    }
+
+    const_iterator cbegin() const noexcept
+    {
+        return const_iterator(m_arr);
+    }
+
+    const_iterator cend() const noexcept
+    {
+        return const_iterator(m_arr + m_size);
     }
 
 

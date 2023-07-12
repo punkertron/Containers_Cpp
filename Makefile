@@ -4,7 +4,7 @@ INCLUDE = -I ./stack/ \
 	-I ./iterator/
 
 all:
-	g++ -std=c++11 ${INCLUDE} ${SRCS}
+	g++ -std=c++17 ${INCLUDE} ${SRCS}
 
 clean:
 	rm -rf a.out

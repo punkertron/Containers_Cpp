@@ -192,6 +192,18 @@ int main()
         std::cout << *it << ' ';
     std::cout << std::endl;
 
+    std::cout << std::endl << "using const iterators loop" << std::endl;
+    for (ft::vector<double>::const_iterator it = v9.cbegin(), end = v9.cend(); it != end; ++it)
+        std::cout << *it << ' ';
+    std::cout << std::endl;
+
+    auto const_it = v9.cbegin();
+    auto non_const_it = v9.begin();
+
+    non_const_it = const_it;
+    //const_it = non_const_it;
+    //*const_it = 5;
+
 
     return 0;
 }
