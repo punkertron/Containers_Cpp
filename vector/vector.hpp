@@ -1,12 +1,12 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include <iostream>
-
 #include <memory>
 #include <limits>
 #include <stdexcept>
 #include <utility>
+
+#include "vector_iterator.hpp"
 
 namespace ft
 {
@@ -22,6 +22,9 @@ public:
     using const_reference   = const value_type&;
     using pointer           = typename std::allocator_traits<Allocator>::pointer;
     using const_pointer     = typename std::allocator_traits<Allocator>::const_pointer;
+    
+    using iterator          = vec_iterator<vector<value_type, allocator_type> >;
+    
     //using iterator          = 
     // ADD ITERATORS
 
@@ -281,6 +284,17 @@ public:
     {
         value_type t;
         resize(count, t);
+    }
+
+
+    iterator begin()
+    {
+        return iterator(m_arr);
+    }
+
+    iterator end()
+    {
+        return iterator(m_arr + m_size);
     }
 
 

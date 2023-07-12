@@ -1,6 +1,7 @@
 SRCS = main.cpp
 INCLUDE = -I ./stack/ \
-	-I ./vector/
+	-I ./vector/ \
+	-I ./iterator/
 
 all:
 	g++ -std=c++11 ${INCLUDE} ${SRCS}

@@ -178,7 +178,19 @@ int main()
     v8.pop_back();
     std::cout << (v9 > v8) << std::endl;
     std::cout << (v9 >= v8) << std::endl;
-    
+
+    v9[0] = 123;
+
+    std::cout << *(v9.begin()) << std::endl;
+
+    std::cout << std::endl << "using range loop" << std::endl;
+    for (auto it : v9)
+        std::cout << it << ' ';
+    std::cout << std::endl;
+    std::cout << std::endl << "using iterators loop" << std::endl;
+    for (ft::vector<double>::iterator it = v9.begin(), end = v9.end(); it != end; ++it)
+        std::cout << *it << ' ';
+    std::cout << std::endl;
 
 
     return 0;
