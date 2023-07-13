@@ -5,6 +5,7 @@
 #include <limits>
 #include <stdexcept>
 #include <utility>
+#include <initializer_list>
 
 #include "vector_iterator.hpp"
 
@@ -14,21 +15,20 @@ template <class T, class Allocator = std::allocator<T> >
 class vector
 {
 public:
+    using AllocTraits               = std::allocator_traits<Allocator>;
+    
     using value_type                = T;
     using allocator_type            = Allocator;
     using size_type                 = std::size_t;
     using difference_type           = std::ptrdiff_t;
     using reference                 = value_type&;
     using const_reference           = const value_type&;
-    using pointer                   = typename std::allocator_traits<Allocator>::pointer;
-    using const_pointer             = typename std::allocator_traits<Allocator>::const_pointer;
-
+    using pointer                   = typename AllocTraits::pointer;
+    using const_pointer             = typename AllocTraits::const_pointer;
     using iterator                  = vec_iterator<vector<value_type, allocator_type> >;
     using const_iterator            = vec_iterator<vector<const value_type, allocator_type> >;
     using reverse_iterator          = std::reverse_iterator<iterator>;
     using const_reverse_iterator    = std::reverse_iterator<const_iterator>;
-
-    using AllocTraits               = std::allocator_traits<Allocator>;
 
     ~vector()
     {
@@ -97,6 +97,15 @@ public:
         other.m_capacity = 0;
     }
 
+    vector( std::initializer_list<T> init,
+        const Allocator& alloc = Allocator() )
+    {
+        reserve(init.size());
+
+        for (auto i : init)
+            push_back(i);
+    }
+
     vector& operator=(vector&& other)
     {
         if (this == &other)
@@ -117,6 +126,42 @@ public:
     }
 
 
+    void assign( size_type count, const T& value )
+    {
+        size_type i = 0;
+
+        while (i < m_size && i < count)
+        {
+            *(m_arr + i) = value;
+            ++i; 
+        }
+        while (i < count)
+        {
+            push_back(value);
+            ++i;
+        }
+    }
+
+    // should implement all iterators?
+    //template< class InputIt >
+    void assign( iterator first, iterator last )
+    {
+        clear();
+
+        while (first != last)
+        {
+            push_back(*first);
+            ++first;
+        }
+    }
+
+    void assign( std::initializer_list<T> ilist )
+    {
+        clear();
+
+        for (auto i : ilist)
+            push_back(i);
+    }
 
     // Element access
     reference at( size_type pos )
@@ -174,24 +219,45 @@ public:
     }
 
 
-    void push_back(const value_type &val)
+    // Iterators
+    iterator begin()
     {
-        if (m_capacity == 0)
-            reserve(10);
-        if (m_size == m_capacity)
-            reserve(m_capacity * 2);
-        AllocTraits::construct(m_alloc, m_arr + m_size, val);
-        ++m_size;
+        return iterator(m_arr);
     }
 
-    void push_back(value_type &&val)
+    const_iterator cbegin() const noexcept
     {
-        if (m_capacity == 0)
-            reserve(10);
-        if (m_size == m_capacity)
-            reserve(m_capacity * 2);
-        AllocTraits::construct(m_alloc, m_arr + m_size, std::move(val));
-        ++m_size;
+        return const_iterator(m_arr);
+    }
+
+    iterator end()
+    {
+        return iterator(m_arr + m_size);
+    }
+
+    const_iterator cend() const noexcept
+    {
+        return const_iterator(m_arr + m_size);
+    }
+
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(m_arr);
+    }
+
+    const_reverse_iterator rcbegin() const noexcept
+    {
+        return const_reverse_iterator(m_arr);
+    }
+
+    reverse_iterator rend()
+    {
+        return reverse_iterator(m_arr + m_size);
+    }
+
+    const_reverse_iterator rcend() const noexcept
+    {
+        return const_reverse_iterator(m_arr + m_size);
     }
 
 
@@ -261,6 +327,26 @@ public:
         m_size = 0;
     }
 
+    void push_back(const value_type &val)
+    {
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size == m_capacity)
+            reserve(m_capacity * 2);
+        AllocTraits::construct(m_alloc, m_arr + m_size, val);
+        ++m_size;
+    }
+
+    void push_back(value_type &&val)
+    {
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size == m_capacity)
+            reserve(m_capacity * 2);
+        AllocTraits::construct(m_alloc, m_arr + m_size, std::move(val));
+        ++m_size;
+    }
+    
     void pop_back()
     {
         --m_size;
@@ -286,47 +372,10 @@ public:
         resize(count, t);
     }
 
-
-    iterator begin()
+    void swap( vector& other )
     {
-        return iterator(m_arr);
+        ;
     }
-
-    iterator end()
-    {
-        return iterator(m_arr + m_size);
-    }
-
-    const_iterator cbegin() const noexcept
-    {
-        return const_iterator(m_arr);
-    }
-
-    const_iterator cend() const noexcept
-    {
-        return const_iterator(m_arr + m_size);
-    }
-
-    reverse_iterator rbegin()
-    {
-        return reverse_iterator(m_arr);
-    }
-
-    reverse_iterator rend()
-    {
-        return reverse_iterator(m_arr + m_size);
-    }
-
-    const_reverse_iterator rcbegin() const noexcept
-    {
-        return const_reverse_iterator(m_arr);
-    }
-
-    const_reverse_iterator rcend() const noexcept
-    {
-        return const_reverse_iterator(m_arr + m_size);
-    }
-
 
 private:
     value_type* m_arr;

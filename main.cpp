@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "stack.hpp"
 #include "vector.hpp"
@@ -226,6 +227,29 @@ int main()
     rit -= 1;
     std::cout << *rit << std::endl;
 
+    ft::vector<std::string> v10 {"abc", "hello", "foo", "bar"};
+
+    for (auto it : v10)
+        std::cout << it << ' ';
+    std::cout << std::endl;
+
+    ft::vector<int> v11 {1, 2};
+    v11.assign(10, 0);
+    for (auto i : v11)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+    ft::vector<int> v12{1, 2, 3, 4, 5};
+    v11.assign(v12.begin(), v12.end());
+
+    for (auto i : v11)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+    v11.assign({-1, -2, -3, -4, -5, -6, -7, -8});
+    for (auto i : v11)
+        std::cout << i << ' ';
+    std::cout << std::endl;
 
 
     return 0;
