@@ -160,6 +160,7 @@ int main()
     ft::vector<int> v7(v);
     pointer_func(v7.data(), v7.size());
     std::cout << (v == v7) << std::endl;
+    std::cout << *v.begin() << " " << *v7.begin() << std::endl;
 
     ft::vector<double> v8, v9;
     for (int i = 0; i < 6; ++i)
@@ -227,7 +228,7 @@ int main()
     rit -= 1;
     std::cout << *rit << std::endl;
 
-    ft::vector<std::string> v10 {"abc", "hello", "foo", "bar"};
+    ft::vector<std::string> v10 = {"abc", "hello", "foo", "bar"};
 
     for (auto it : v10)
         std::cout << it << ' ';

@@ -97,10 +97,10 @@ public:
         other.m_capacity = 0;
     }
 
-    vector( std::initializer_list<T> init,
-        const Allocator& alloc = Allocator() )
+    vector( std::initializer_list<T> init, const Allocator& alloc = Allocator() ):
+        m_size(0), m_capacity(sizeof(init)), m_alloc(alloc)
     {
-        reserve(init.size());
+        m_arr = AllocTraits::allocate(m_alloc, m_capacity);
 
         for (auto i : init)
             push_back(i);
@@ -337,16 +337,17 @@ public:
             reserve(10);
         if (m_size + count < m_capacity)
             reserve(m_capacity * 2);
-        else if (count > 0)
+        if (count > 0)
         {
-
             size_type i = 0;
             iterator cit = begin();
+
             while (cit < pos)
             {
                 ++cit;
                 ++i;
             }
+            std::cerr << "i = " << i << std::endl;
             for (size_type j = m_size + count - 1; j >= i + count; --j)
                 AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j - count)));
             m_size += count;
