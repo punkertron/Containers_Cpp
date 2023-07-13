@@ -26,9 +26,6 @@ public:
     using iterator          = vec_iterator<vector<value_type, allocator_type> >;
     using const_iterator    = vec_iterator<vector<const value_type, allocator_type> >;
 
-    //using iterator          = 
-    // ADD ITERATORS
-
     using AllocTraits       = std::allocator_traits<Allocator>;
 
     ~vector()

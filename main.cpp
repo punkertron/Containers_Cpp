@@ -200,9 +200,23 @@ int main()
     auto const_it = v9.cbegin();
     auto non_const_it = v9.begin();
 
-    non_const_it = const_it;
-    //const_it = non_const_it;
-    //*const_it = 5;
+    *non_const_it = 5;
+
+    const_it += 2;
+    std::cout << *const_it << std::endl;
+
+    auto test_it1 = ++v9.begin();
+    auto test_it2 = v9.begin();
+
+    std::cout << (test_it1 > test_it2) << std::endl;
+    std::cout << (test_it1 >= test_it2) << std::endl;
+    std::cout << (test_it1 < test_it2) << std::endl;
+    std::cout << (test_it1 <= test_it2) << std::endl;
+    ++test_it2;
+    std::cout << (test_it1 <= test_it2) << std::endl;
+    ++test_it2;
+    std::cout << (test_it1 < test_it2) << std::endl;
+    std::cout << (test_it1 <= test_it2) << std::endl;
 
 
     return 0;

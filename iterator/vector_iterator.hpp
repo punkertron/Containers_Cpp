@@ -7,7 +7,7 @@
 namespace ft {
 
 template <class T>
-class vec_iterator
+struct vec_iterator
 {
 public:
 
@@ -26,17 +26,11 @@ public:
         ;
     }
 
-    vec_iterator<value_type>& operator=(const vec_iterator<value_type>& other) = default;
-    // {
-    //     this->m_ptr = other.m_ptr;
-    //     return *this;
-    // }
-
-    // vec_iterator& operator=(vec_iterator *other)
-    // {
-    //     this->m_ptr = other->m_ptr;
-    //     return *this;
-    // }
+    vec_iterator& operator=(const vec_iterator& other)
+    {
+        m_ptr = other.m_ptr;
+        return *this;
+    }
 
     vec_iterator& operator++()
     {
@@ -62,6 +56,18 @@ public:
         vec_iterator it = *this;
         --(*this);
         return it;
+    }
+
+    vec_iterator& operator+=(size_type n)
+    {
+        m_ptr += n;
+        return *this;
+    }
+
+    vec_iterator& operator-=(size_type n)
+    {
+        m_ptr -= n;
+        return *this;
     }
 
     pointer operator->()
@@ -94,6 +100,26 @@ public:
         return *(m_ptr + pos);
     }
 
+    bool operator<(const vec_iterator& other)
+    {
+        return m_ptr < other.m_ptr;
+    }
+
+    bool operator>(const vec_iterator& other)
+    {
+        return other.m_ptr < m_ptr;
+    }
+
+    bool operator<=(const vec_iterator& other)
+    {
+        return !(m_ptr > other.m_ptr);
+    }
+
+    bool operator>=(const vec_iterator& other)
+    {
+        return !(m_ptr < other.m_ptr);
+    }
+
     bool operator==(const vec_iterator& other)
     {
         return m_ptr == other.m_ptr;
@@ -104,13 +130,13 @@ public:
         return !operator==(other);
     }
 
+
+
 private:
     pointer m_ptr;
-
 };
 
 
 } // namespace ft
-
 
 #endif // VECTOR_ITERATOR_HPP
