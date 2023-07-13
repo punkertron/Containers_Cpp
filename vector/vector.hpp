@@ -384,14 +384,14 @@ template< class T, class Alloc >
 bool operator>=( const vector<T, Alloc>& lhs,
                  const vector<T, Alloc>& rhs )
 {
-    return operator<(rhs, lhs) || operator==(rhs, lhs);
+    return !operator<(lhs, rhs);
 }
 
 template< class T, class Alloc >
 bool operator<=( const vector<T, Alloc>& lhs,
                  const vector<T, Alloc>& rhs )
 {
-    return operator<(lhs, rhs) || operator==(lhs, rhs);
+    return !operator>(lhs, rhs);
 }
 
 
