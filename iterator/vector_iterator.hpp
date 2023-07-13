@@ -130,8 +130,6 @@ public:
         return !operator==(other);
     }
 
-
-
 private:
     pointer m_ptr;
 };

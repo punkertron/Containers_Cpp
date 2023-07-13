@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "stack.hpp"
+//#include "stack.hpp"
 #include "vector.hpp"
 
 void pointer_func(const int* p, std::size_t size)
@@ -252,5 +252,14 @@ int main()
     std::cout << std::endl;
 
 
+    ft::vector<int> v13 = {0, 1, 2, 3, 4, 5, 6};
+    std::cout << "Before insert" << std::endl;
+    for (auto i : v13)
+        std::cout << i << ' ';
+    std::cout << "\nAfter Insert" << std::endl;
+    v13.insert(v13.end(), 2, -1);
+    for (auto i : v13)
+        std::cout << i << ' ';
+    std::cout << std::endl;
     return 0;
 }

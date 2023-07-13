@@ -163,6 +163,11 @@ public:
             push_back(i);
     }
 
+    allocator_type get_allocator() const noexcept
+    {
+        return m_alloc;
+    }
+
     // Element access
     reference at( size_type pos )
     {
@@ -317,7 +322,6 @@ public:
     }
 
 
-
     // Modifiers
     void clear() noexcept
     {
@@ -326,6 +330,41 @@ public:
             AllocTraits::destroy(m_alloc, m_arr + m_size);
         m_size = 0;
     }
+
+    iterator insert( iterator pos, size_type count, const T& value )
+    {
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size + count < m_capacity)
+            reserve(m_capacity * 2);
+        else if (count > 0)
+        {
+
+            size_type i = 0;
+            iterator cit = begin();
+            while (cit < pos)
+            {
+                ++cit;
+                ++i;
+            }
+            for (size_type j = m_size + count - 1; j >= i + count; --j)
+                AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j - count)));
+            m_size += count;
+            while (count)
+            {
+                AllocTraits::construct(m_alloc, m_arr + i + count - 1, value);
+                --count;
+            }
+            ++pos;
+
+        }
+        return pos;
+    }
+
+
+
+
+
 
     void push_back(const value_type &val)
     {
