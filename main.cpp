@@ -218,6 +218,15 @@ int main()
     std::cout << (test_it1 < test_it2) << std::endl;
     std::cout << (test_it1 <= test_it2) << std::endl;
 
+    ft::vector<double>::reverse_iterator rit = v9.rbegin();
+
+    //std::cout << *rit << std::endl; //ILLEGAL
+    rit -= 1;
+    std::cout << *rit << std::endl;
+    rit -= 1;
+    std::cout << *rit << std::endl;
+
+
 
     return 0;
 }
