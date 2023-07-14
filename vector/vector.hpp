@@ -340,7 +340,6 @@ public:
             reserve(m_capacity * 2);
         if (count > 0)
         {
-            std::cerr << "i = " << i << std::endl;
             for (size_type j = m_size + count - 1; j >= i + count; --j)
                 AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j - count)));
             m_size += count;
@@ -355,19 +354,18 @@ public:
         return pos;
     }
 
-
-
-
-
-
     void push_back(const value_type &val)
     {
+        insert(end(), 1, val);
+
+        /*
         if (m_capacity == 0)
             reserve(10);
         if (m_size == m_capacity)
             reserve(m_capacity * 2);
         AllocTraits::construct(m_alloc, m_arr + m_size, val);
         ++m_size;
+        */
     }
 
     void push_back(value_type &&val)

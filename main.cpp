@@ -258,8 +258,20 @@ int main()
     for (auto i : v13)
         std::cout << i << ' ';
     std::cout << "\nAfter Insert" << std::endl;
-    v13.insert(--v13.end(), 2, -1);
+    v13.insert(++(++v13.begin()), 2, -1);
+    v13.push_back(42);
     for (auto i : v13)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+    ft::vector<std::string> v14 = {"foo", "bar", "hello", "world"};
+    std::cout << "Before insert" << std::endl;
+    for (auto i : v14)
+        std::cout << i << ' ';
+    std::cout << "\nAfter Insert" << std::endl;
+    v14.insert(++(++v14.begin()), 2, "bla-bla");
+    v14.push_back("OOPS");
+    for (auto i : v14)
         std::cout << i << ' ';
     std::cout << std::endl;
 
