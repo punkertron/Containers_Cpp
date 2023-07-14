@@ -333,20 +333,13 @@ public:
 
     iterator insert( iterator pos, size_type count, const T& value )
     {
+        size_type i = &(*pos) - m_arr;
         if (m_capacity == 0)
             reserve(10);
         if (m_size + count < m_capacity)
             reserve(m_capacity * 2);
         if (count > 0)
         {
-            size_type i = 0;
-            iterator cit = begin();
-
-            while (cit < pos)
-            {
-                ++cit;
-                ++i;
-            }
             std::cerr << "i = " << i << std::endl;
             for (size_type j = m_size + count - 1; j >= i + count; --j)
                 AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j - count)));
@@ -416,6 +409,8 @@ public:
     {
         ;
     }
+
+    
 
 private:
     value_type* m_arr;

@@ -58,6 +58,18 @@ public:
         return it;
     }
 
+    // vec_iterator& operator+(size_type n)
+    // {
+    //     m_ptr += n;
+    //     return *this;
+    // }
+
+    // vec_iterator& operator-(size_type n)
+    // {
+    //     m_ptr -= n;
+    //     return *this;
+    // }
+
     vec_iterator& operator+=(size_type n)
     {
         m_ptr += n;
