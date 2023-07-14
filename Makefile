@@ -4,8 +4,10 @@ OBJS		= ${SRCS:.cpp=.o}
 INC			= stack vector iterator
 INCLUDE		= $(INC:%=-I ./%)
 
-CXX			= g++
-CXXFLAGS	= -std=c++17
+DEPS		= ${OBJS:%.o=%.d}
+
+CXX			= clang++
+CXXFLAGS	= -std=c++17 #-fsanitize=address -fsanitize=leak -fsanitize=undefined
 
 RM			= rm -rf
 
@@ -15,10 +17,12 @@ ${NAME}: ${OBJS}
 	${CXX} ${CXXFLAGS} ${INCLUDE} ${OBJS} -o ${NAME}
 
 %.o:%.cpp
-	${CXX} ${CXXFLAGS} ${INCLUDE} -c $< -o $@
+	${CXX} ${CXXFLAGS} ${INCLUDE} -MMD -c $< -o $@
+
+-include ${DEPS}
 
 clean:
-	${RM} ${OBJS}
+	${RM} ${OBJS} ${DEPS}
 
 fclean: clean
 	${RM} ${NAME}
