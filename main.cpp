@@ -275,5 +275,21 @@ int main()
         std::cout << i << ' ';
     std::cout << std::endl;
 
+    std::string temp("TEMP_STRING");
+
+    v14.insert(v14.end(), std::move(temp));
+    for (auto i : v14)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+
+    ft::vector<std::string> v15 {"NUM_1", "NUM_2", "NUM_3"};
+    v14.insert(v14.end(), v15.begin(), v15.end());
+    std::cout << *((v14.insert(++v14.begin(), {"ABC","BOOO","BAR", "FUN"}))) << std::endl;
+
+    for (auto i : v14)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
     return 0;
 }

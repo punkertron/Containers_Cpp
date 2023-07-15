@@ -348,10 +348,50 @@ public:
                 AllocTraits::construct(m_alloc, m_arr + i + count - 1, value);
                 --count;
             }
-            ++pos;
-
         }
+        pos = m_arr + i;
         return pos;
+    }
+
+    iterator insert( iterator pos, T&& value )
+    {
+        size_type i = pos - m_arr;
+        if (m_capacity == 0)
+            reserve(10);
+        if (m_size == m_capacity)
+            reserve(m_capacity * 2);
+        if (m_size > 0)
+        {
+            for (size_type j = m_size - 1; j >= i ; --j)
+                AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j)));
+            AllocTraits::construct(m_alloc, m_arr + i, std::move(value));
+        }
+        ++m_size;
+        pos = m_arr + i;
+        return pos;
+    }
+
+    iterator insert( iterator pos, iterator first, iterator last )
+    {
+        size_type i = pos - m_arr;
+        while (first != last)
+        {
+            pos = insert(pos, 1, *first);
+            ++pos;
+            ++first;
+        }
+        return m_arr + i;
+    }
+
+    iterator insert( iterator pos, std::initializer_list<T> ilist )
+    {
+        size_type i = pos - m_arr;
+        for (auto i : ilist)
+        {
+            pos = insert(pos, 1, i);
+            ++pos;
+        }
+        return m_arr + i;
     }
 
     void push_back(const value_type &val)
@@ -370,12 +410,16 @@ public:
 
     void push_back(value_type &&val)
     {
+        insert(end(), std::move(val));
+
+        /*
         if (m_capacity == 0)
             reserve(10);
         if (m_size == m_capacity)
             reserve(m_capacity * 2);
         AllocTraits::construct(m_alloc, m_arr + m_size, std::move(val));
         ++m_size;
+        */
     }
     
     void pop_back()

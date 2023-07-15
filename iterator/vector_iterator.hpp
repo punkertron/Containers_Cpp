@@ -58,11 +58,11 @@ public:
         return it;
     }
 
-    // vec_iterator& operator+(size_type n)
-    // {
-    //     m_ptr += n;
-    //     return *this;
-    // }
+    vec_iterator& operator+(size_type n)
+    {
+        m_ptr += n;
+        return *this;
+    }
 
     // vec_iterator& operator-(size_type n)
     // {
@@ -140,6 +140,11 @@ public:
     bool operator!=(const vec_iterator& other)
     {
         return !operator==(other);
+    }
+
+    size_type operator-(const vec_iterator& other)
+    {
+        return m_ptr - other.m_ptr;
     }
 
 private:
