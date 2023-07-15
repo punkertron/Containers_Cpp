@@ -3,4 +3,4 @@ a.out
 fib.cpp
 test.cpp
 script.sh
-*.o
+objs

@@ -1,6 +1,11 @@
 NAME		= a.out
+
 SRCS		= main.cpp
-OBJS		= ${SRCS:.cpp=.o}
+
+OBJS_PATH	= ./objs/
+OBJS_FILES	= ${SRCS:.cpp=.o}
+OBJS		= ${patsubst %,${OBJS_PATH}%,${OBJS_FILES}}
+
 INC			= stack vector iterator
 INCLUDE		= $(INC:%=-I ./%)
 
@@ -16,17 +21,20 @@ all: ${NAME}
 ${NAME}: ${OBJS}
 	${CXX} ${CXXFLAGS} ${INCLUDE} ${OBJS} -o ${NAME}
 
-%.o:%.cpp
-	${CXX} ${CXXFLAGS} ${INCLUDE} -MMD -c $< -o $@
+${OBJS_PATH}%.o : %.cpp | ${OBJS_PATH}
+	${CXX} ${CXXFLAGS} ${INCLUDE} -MMD -MP -c $< -o $@
+
+${OBJS_PATH}:
+	mkdir -p ${OBJS_PATH}
 
 -include ${DEPS}
 
 clean:
-	${RM} ${OBJS} ${DEPS}
+	${RM} ${OBJS_PATH}
 
 fclean: clean
 	${RM} ${NAME}
 
-re: fclean ${NAME}
+re: fclean | ${OBJS_PATH} ${NAME}
 
 .PHONY: all clean fclean re
