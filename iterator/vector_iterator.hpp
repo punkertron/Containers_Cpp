@@ -1,7 +1,6 @@
 #ifndef VECTOR_ITERATOR_HPP
 #define VECTOR_ITERATOR_HPP
 
-#include <iterator>
 #include <type_traits>
 
 namespace ft {
@@ -18,10 +17,6 @@ public:
     using pointer           = typename std::iterator_traits<iterator_type>::pointer;
     using reference         = typename std::iterator_traits<iterator_type>::reference;
     using size_type         = std::size_t;
-
-    // using size_type         = typename T::size_type;
-    // using const_pointer     = typename T::const_pointer;
-    // using const_reference   = typename T::const_reference;
 
     vec_iterator(pointer ptr): m_ptr(ptr)
     {

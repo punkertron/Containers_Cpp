@@ -295,11 +295,24 @@ int main()
     auto it_1 = v14.begin();
     auto it_2 = ++v14.cbegin();
     
-    std::cout << *it_1 << std::endl;
-    // it_1 = it_2;
-    std::cout << *it_1 << std::endl;
+    // std::cout << *it_1 << std::endl;
+    it_1 = it_2;
+    // std::cout << *it_1 << std::endl;
     it_2 = it_1;
 
     ft::vector<int>::iterator reg_it(it_2);
+
+    std::cout << "v14.size() = " << v14.size() << std::endl;
+    std::cout << *v14.erase(++v14.begin(), ++++++v14.begin()) << std::endl;
+    for (auto i : v14)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+    std::cout << "v14.size() = " << v14.size() << std::endl;
+
+    v14.erase(--v14.end());
+    for (auto i : v14)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
     return 0;
 }

@@ -400,6 +400,38 @@ public:
         return m_arr + i;
     }
 
+    iterator erase( const_iterator pos )
+    {
+        return erase(pos, pos + 1);
+    }
+
+    iterator erase( const_iterator first, const_iterator last )
+    {
+        if (first == end() || first == last)
+            return last;
+        size_type to_erase = last - first, i = first - m_arr;
+        while (first != last)
+        {
+            AllocTraits::destroy(m_alloc, &(*first));
+            ++first;
+        }
+        m_size -= to_erase;
+
+        if (last == end() + to_erase)
+            return end();
+        size_type to_move = end() - m_arr + i - to_erase, j = 0;
+        std::cerr << "to_move = " << to_move << std::endl;
+        std::cerr << "i = " << i << std::endl;
+        std::cerr << "to_erase = " << to_erase << std::endl;
+        while (j != to_move)
+        {
+            AllocTraits::construct(m_alloc, m_arr + i + j, std::move(*(m_arr + i + to_erase + j)));
+            ++j;
+        }
+        return m_arr + i;
+    }
+
+
     void push_back(const value_type &val)
     {
         insert(end(), 1, val);
