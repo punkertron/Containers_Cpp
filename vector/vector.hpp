@@ -23,10 +23,16 @@ public:
     using difference_type           = std::ptrdiff_t;
     using reference                 = value_type&;
     using const_reference           = const value_type&;
+    // using pointer                   = T*;
+    // using const_pointer             = const T*;
     using pointer                   = typename AllocTraits::pointer;
     using const_pointer             = typename AllocTraits::const_pointer;
-    using iterator                  = vec_iterator<vector<value_type, allocator_type> >;
-    using const_iterator            = vec_iterator<vector<const value_type, allocator_type> >;
+
+    // using iterator                  = vec_iterator<vector<value_type, allocator_type> >;
+    // using const_iterator            = vec_iterator<vector<const value_type, allocator_type> >;
+
+    using iterator                  = vec_iterator<pointer>;
+    using const_iterator            = vec_iterator<const_pointer>;
     using reverse_iterator          = std::reverse_iterator<iterator>;
     using const_reverse_iterator    = std::reverse_iterator<const_iterator>;
 
@@ -331,7 +337,7 @@ public:
         m_size = 0;
     }
 
-    iterator insert( iterator pos, size_type count, const T& value )
+    iterator insert( const_iterator pos, size_type count, const T& value )
     {
         size_type i = &(*pos) - m_arr;
         if (m_capacity == 0)
@@ -353,7 +359,7 @@ public:
         return pos;
     }
 
-    iterator insert( iterator pos, T&& value )
+    iterator insert( const_iterator pos, T&& value )
     {
         size_type i = pos - m_arr;
         if (m_capacity == 0)
@@ -371,7 +377,7 @@ public:
         return pos;
     }
 
-    iterator insert( iterator pos, iterator first, iterator last )
+    iterator insert( const_iterator pos, const_iterator first, const_iterator last )
     {
         size_type i = pos - m_arr;
         while (first != last)
@@ -383,7 +389,7 @@ public:
         return m_arr + i;
     }
 
-    iterator insert( iterator pos, std::initializer_list<T> ilist )
+    iterator insert( const_iterator pos, std::initializer_list<T> ilist )
     {
         size_type i = pos - m_arr;
         for (auto i : ilist)

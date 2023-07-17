@@ -11,19 +11,32 @@ struct vec_iterator
 {
 public:
 
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type        = typename T::value_type;;
-    using difference_type   = typename T::difference_type;
-    using pointer           = typename T::pointer;
-    using reference         = typename T::reference;
+    using iterator_type      = T;
+    using iterator_category = typename std::iterator_traits<iterator_type>::iterator_category;
+    using value_type        = typename std::iterator_traits<iterator_type>::value_type;
+    using difference_type   = typename std::iterator_traits<iterator_type>::difference_type;
+    using pointer           = typename std::iterator_traits<iterator_type>::pointer;
+    using reference         = typename std::iterator_traits<iterator_type>::reference;
+    using size_type         = std::size_t;
 
-    using size_type         = typename T::size_type;
-    using const_pointer     = typename T::const_pointer;
-    using const_reference   = typename T::const_reference;
+    // using size_type         = typename T::size_type;
+    // using const_pointer     = typename T::const_pointer;
+    // using const_reference   = typename T::const_reference;
 
     vec_iterator(pointer ptr): m_ptr(ptr)
     {
         ;
+    }
+
+    template <class U>
+    vec_iterator(const vec_iterator<U>& other)
+    {
+        m_ptr = (pointer)other.m_ptr;
+    }
+    
+    vec_iterator(const vec_iterator& other)
+    {
+        m_ptr = other.m_ptr;
     }
 
     vec_iterator& operator=(const vec_iterator& other)
@@ -64,11 +77,11 @@ public:
         return *this;
     }
 
-    // vec_iterator& operator-(size_type n)
-    // {
-    //     m_ptr -= n;
-    //     return *this;
-    // }
+    vec_iterator& operator-(size_type n)
+    {
+        m_ptr -= n;
+        return *this;
+    }
 
     vec_iterator& operator+=(size_type n)
     {
@@ -93,21 +106,6 @@ public:
     }
 
     reference operator[](size_type pos)
-    {
-        return *(m_ptr + pos);
-    }
-
-    const_pointer operator->() const
-    {
-        return m_ptr;
-    }
-
-    const_reference operator*() const
-    {
-        return *m_ptr;
-    }
-
-    const_reference operator[](size_type pos) const
     {
         return *(m_ptr + pos);
     }
@@ -149,6 +147,8 @@ public:
 
 private:
     pointer m_ptr;
+
+    template <class U> friend class vec_iterator;
 };
 
 

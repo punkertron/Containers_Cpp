@@ -291,5 +291,15 @@ int main()
         std::cout << i << ' ';
     std::cout << std::endl;
 
+
+    auto it_1 = v14.begin();
+    auto it_2 = ++v14.cbegin();
+    
+    std::cout << *it_1 << std::endl;
+    // it_1 = it_2;
+    std::cout << *it_1 << std::endl;
+    it_2 = it_1;
+
+    ft::vector<int>::iterator reg_it(it_2);
     return 0;
 }
