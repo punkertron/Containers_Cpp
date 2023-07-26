@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <utility>
+#include "list_iterator.hpp"
 
 namespace ft {
 
@@ -19,45 +20,61 @@ public:
     using size_type         = std::size_t;
     using difference_type   = std::ptrdiff_t;
 
+    using iterator          = list_iterator<value_type>;
 
-    list(): list(Allocator()) {};
-
-    explicit list( const Allocator& alloc ): alloc(alloc)
+    ~list()
     {
         ;
     }
 
-    explicit list( size_type count, const T& value = T(), const Allocator& alloc = Allocator()): alloc(alloc)
+    // list(): list(Allocator()) {};
+
+    // explicit list( const Allocator& alloc ): alloc(alloc)
+    // {
+    //     ;
+    // }
+
+    // explicit list( size_type count, const T& value = T(), const Allocator& alloc = Allocator()): alloc(alloc)
+    // {
+    //     ;
+    // }
+
+    void push_back( const T& value )
     {
-        ;
+        ListNode<T>* newNode = new ListNode<value_type>(value);
+        if (tail)
+        {
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+        else
+        {
+            head = tail = newNode;
+        }
+        ++m_size;
     }
 
-    list( value_type val )
+    iterator begin()
     {
-        m_n->next = new Node(val);
+        return iterator(head);
+    }
+
+    iterator end()
+    {
+        return iterator(nullptr);
+    }
+
+    size_type size() const noexcept
+    {
+        return m_size;
     }
 
 private:
-    struct BaseNode
-    {
-        BaseNode* prev = nullptr;
-        BaseNode* next = nullptr;
-    };
-
-    struct Node : BaseNode
-    {
-        value_type value;
-        Node(value_type val = value_type(), Node *prev = nullptr, Node *next = nullptr):
-            value(val)
-        {
-            this->prev = prev; BaseNode::next(next);
-        }
-    };
-
     Allocator alloc;
-    BaseNode *m_b;
-    Node *m_n;
-    size_type m_size;
+    ListNode<value_type>* head;
+    ListNode<value_type>* tail;
+    size_type m_size = 0;
 
 };
 

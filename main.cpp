@@ -16,8 +16,14 @@ void pointer_func(const int* p, std::size_t size)
 
 class A
 {
-    private:
+private:
     A();
+
+public:
+    A(const std::string& s)
+    {
+        std::cerr << "From A const. : " << s << std::endl;
+    }
 };
 
 int main()
@@ -332,10 +338,17 @@ int main()
 ///////////////////////////////////////
 
     ft::list<int> l;
-    ft::list<A> l2;
-    ft::list<int> l3(5);
+    l.push_back(455);
+    l.push_back(-100);
+    l.push_back(22222);
 
-    
+    for (auto it = l.begin(); it != l.end(); ++it)
+        std::cout << *it << ' ';
+    std::cout << std::endl;
+    std::cout << "size = " << l.size() << std::endl;
+
+    // auto it = l.begin();
+    std::cout << *l.begin() << std::endl;
 
     return 0;
 }
