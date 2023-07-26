@@ -12,7 +12,7 @@ INCLUDE		= $(INC:%=-I ./%)
 DEPS		= ${OBJS:%.o=%.d}
 
 CXX			= clang++
-CXXFLAGS	= -std=c++17 -fsanitize=address -fsanitize=leak -fsanitize=undefined
+CXXFLAGS	= -std=c++17 -g3 -fsanitize=address -fsanitize=leak -fsanitize=undefined
 
 RM			= rm -rf
 
@@ -37,4 +37,7 @@ fclean: clean
 
 re: fclean | ${OBJS_PATH} ${NAME}
 
-.PHONY: all clean fclean re
+format:
+	clang-format -i $(INC:%= ./%/*)
+
+.PHONY: all clean fclean re format
