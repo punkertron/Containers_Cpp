@@ -6,13 +6,13 @@ OBJS_PATH	= ./objs/
 OBJS_FILES	= ${SRCS:.cpp=.o}
 OBJS		= ${patsubst %,${OBJS_PATH}%,${OBJS_FILES}}
 
-INC			= stack vector iterator
+INC			= stack vector iterator list
 INCLUDE		= $(INC:%=-I ./%)
 
 DEPS		= ${OBJS:%.o=%.d}
 
 CXX			= clang++
-CXXFLAGS	= -std=c++17 -g3 -fsanitize=address -fsanitize=leak -fsanitize=undefined
+CXXFLAGS	= -std=c++17 #-g3 -fsanitize=address -fsanitize=leak -fsanitize=undefined
 
 RM			= rm -rf
 
