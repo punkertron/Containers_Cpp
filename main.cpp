@@ -342,18 +342,29 @@ int main()
     l.push_back(-100);
     l.push_back(22222);
 
-    for (auto it = l.begin(); it != l.end(); ++it)
-        std::cout << *it << ' ';
-    std::cout << std::endl;
-    std::cout << "size = " << l.size() << std::endl;
+    // for (auto it = l.begin(); it != l.end(); ++it)
+    //     std::cout << *it << ' ';
+    // std::cout << std::endl;
+    // std::cout << "size = " << l.size() << std::endl;
 
-    l.pop_back();
-    for (auto it = l.begin(); it != l.end(); ++it)
-        std::cout << *it << ' ';
-    std::cout << std::endl;
+    // l.pop_back();
+    // for (auto it = l.begin(); it != l.end(); ++it)
+    //     std::cout << *it << ' ';
+    // std::cout << std::endl;
+    // std::cout << "size = " << l.size() << std::endl;
 
+    
+    // for (auto it = l.cbegin(), end = l.cend(); it != end; ++it)
+    //     std::cout << *it << ' ';
+    // std::cout << std::endl;
 
-    // std::cout << *l.begin() << std::endl;
+    ft::list<int>::const_iterator cit = l.cbegin();
+    ft::list<int>::iterator it = ++l.begin();
+
+    cit = it;
+    cit = --cit;
+
+    std::cout << *cit << std::endl;
 
     ft::list<A> l2;
 
