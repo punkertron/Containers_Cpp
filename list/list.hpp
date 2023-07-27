@@ -12,9 +12,9 @@ class list
 {
 public:
     using value_type        = T;
-    using allocator_type    = Allocator;
-    using pointer           = typename std::allocator_traits<Allocator>::pointer;
-    using const_pointer     = typename std::allocator_traits<Allocator>::const_pointer;
+    using allocator_type    = typename std::allocator_traits<Allocator>::template rebind_alloc<ListNode<value_type>>; //Allocator;
+    using pointer           = typename std::allocator_traits<allocator_type>::pointer;
+    using const_pointer     = typename std::allocator_traits<allocator_type>::const_pointer;
     using reference         = value_type&;
     using const_reference   = const value_type&;
     using size_type         = std::size_t;
@@ -24,15 +24,21 @@ public:
 
     ~list()
     {
-        ;
+        while (m_head)
+        {
+            ListNode<value_type> *tmp = m_head;
+            m_head = m_head->next;
+            deallocateNode(tmp);
+        }
     }
 
-    // list(): list(Allocator()) {};
+    list(): list(Allocator()) {};
 
-    // explicit list( const Allocator& alloc ): alloc(alloc)
-    // {
-    //     ;
-    // }
+    explicit list( const Allocator& alloc ):
+        m_alloc(alloc), m_head(nullptr), m_tail(nullptr)
+    {
+        ;
+    }
 
     // explicit list( size_type count, const T& value = T(), const Allocator& alloc = Allocator()): alloc(alloc)
     // {
@@ -41,23 +47,35 @@ public:
 
     void push_back( const T& value )
     {
-        ListNode<T>* newNode = new ListNode<value_type>(value);
-        if (tail)
+        ListNode<value_type>* newNode = allocateNode(value);
+        if (m_tail)
         {
-            tail->next = newNode;
-            newNode->prev = tail;
-            tail = newNode;
+            m_tail->next = newNode;
+            newNode->prev = m_tail;
+            m_tail = newNode;
         }
         else
         {
-            head = tail = newNode;
+            m_head = m_tail = newNode;
         }
         ++m_size;
     }
 
+    void pop_back()
+    {
+        ListNode<value_type> *tmp = m_tail;
+        m_tail = m_tail->prev;
+        if (m_tail)
+            m_tail->next = nullptr;
+        else
+            m_head = nullptr;
+        deallocateNode(tmp);
+        --m_size;
+    }
+
     iterator begin()
     {
-        return iterator(head);
+        return iterator(m_head);
     }
 
     iterator end()
@@ -71,10 +89,26 @@ public:
     }
 
 private:
-    Allocator alloc;
-    ListNode<value_type>* head;
-    ListNode<value_type>* tail;
+    ListNode<value_type>* m_head;
+    ListNode<value_type>* m_tail;
     size_type m_size = 0;
+    allocator_type m_alloc;
+
+    ListNode<value_type>* allocateNode(const value_type& value)
+    {
+        ListNode<value_type>* newNode = std::allocator_traits<allocator_type>::allocate(m_alloc, 1);
+        std::allocator_traits<allocator_type>::construct(m_alloc, newNode, value);
+        return newNode;
+    }
+
+    void deallocateNode(ListNode<value_type>* node)
+    {
+        if (node)
+        {
+            std::allocator_traits<allocator_type>::destroy(m_alloc, node);
+            std::allocator_traits<allocator_type>::deallocate(m_alloc, node, 1);
+        }
+    }
 
 };
 

@@ -347,8 +347,15 @@ int main()
     std::cout << std::endl;
     std::cout << "size = " << l.size() << std::endl;
 
-    // auto it = l.begin();
-    std::cout << *l.begin() << std::endl;
+    l.pop_back();
+    for (auto it = l.begin(); it != l.end(); ++it)
+        std::cout << *it << ' ';
+    std::cout << std::endl;
+
+
+    // std::cout << *l.begin() << std::endl;
+
+    ft::list<A> l2;
 
     return 0;
 }
