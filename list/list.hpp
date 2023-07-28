@@ -4,108 +4,142 @@
 #include <memory>
 #include <utility>
 
-#include "list_iterator.hpp"
-
 namespace ft
 {
 
 template <class T, class Allocator = std::allocator<T>>
 class list
 {
-   public:
-    using value_type = T;
-    using allocator_type =
-        typename std::allocator_traits<Allocator>::template rebind_alloc<ListNode<value_type>>;  // Allocator;
-    using pointer         = typename std::allocator_traits<allocator_type>::pointer;
-    using const_pointer   = typename std::allocator_traits<allocator_type>::const_pointer;
-    using reference       = value_type&;
-    using const_reference = const value_type&;
-    using size_type       = std::size_t;
-    using difference_type = std::ptrdiff_t;
+public:
 
-    using iterator       = list_iterator<value_type>;
-    using const_iterator = list_iterator<value_type, true>;
 
-    ~list()
+    using value_type        = T;
+    using allocator_type    = Allocator;
+    using pointer           = typename std::allocator_traits<allocator_type>::pointer;
+    using size_type         = std::size_t;
+   
+
+    list()
     {
-        while (m_head)
-        {
-            ListNode<value_type>* tmp = m_head;
-            m_head                    = m_head->next;
-            deallocateNode(tmp);
-        }
+        ptr = new BaseNode;
     }
-
-    list() : list(Allocator()){};
-
-    explicit list(const Allocator& alloc) : m_alloc(alloc), m_head(nullptr), m_tail(nullptr) { ; }
-
-    // explicit list( size_type count, const T& value = T(), const Allocator& alloc = Allocator()): alloc(alloc)
-    // {
-    //     ;
-    // }
+    ~list() {}
 
     void push_back(const T& value)
     {
-        ListNode<value_type>* newNode = allocateNode(value);
-        if (m_tail)
+        Node* newNode = allocateNode(value);
+        if (m_size)
         {
-            m_tail->next  = newNode;
-            newNode->prev = m_tail;
-            m_tail        = newNode;
+            newNode->prev = ptr->prev;
+            newNode->next = ptr;
+            ptr->prev->next = newNode;
+            ptr->prev = newNode;
         }
         else
         {
-            m_head = m_tail = newNode;
+            ptr->next = newNode;
+            newNode->next = ptr;
+            ptr->prev = newNode;
         }
         ++m_size;
     }
 
-    void pop_back()
+    void print_all()
     {
-        ListNode<value_type>* tmp = m_tail;
-        m_tail                    = m_tail->prev;
-        if (m_tail)
-            m_tail->next = nullptr;
-        else
-            m_head = nullptr;
-        deallocateNode(tmp);
-        --m_size;
+        BaseNode *tmp = ptr;
+        size_type i = m_size;
+
+        while (i)
+        {
+            tmp = tmp->next;
+            std::cerr << static_cast<Node*>(tmp)->data << ' ';
+            --i;
+        }
+        std::cerr << std::endl;
     }
 
-    iterator begin() { return iterator(m_head); }
 
-    iterator end() { return iterator(nullptr, m_tail); }
 
-    const_iterator cbegin() { return const_iterator(m_head); }
+private:
 
-    const_iterator cend() { return const_iterator(nullptr); }
+    struct Node;
+    using node_allocator_type =
+        typename std::allocator_traits<allocator_type>::template rebind_alloc<Node>;
 
-    size_type size() const noexcept { return m_size; }
-
-   private:
-    ListNode<value_type>* m_head;
-    ListNode<value_type>* m_tail;
-    size_type m_size = 0;
-    allocator_type m_alloc;
-
-    ListNode<value_type>* allocateNode(const value_type& value)
+    struct BaseNode
     {
-        ListNode<value_type>* newNode = std::allocator_traits<allocator_type>::allocate(m_alloc, 1);
-        std::allocator_traits<allocator_type>::construct(m_alloc, newNode, value);
+        BaseNode *prev = nullptr;
+        BaseNode *next = nullptr;
+    };
+
+    struct Node : BaseNode
+    {
+        value_type data;
+
+        Node(const value_type& value): data(value) {}
+    };
+
+    BaseNode* ptr;
+    node_allocator_type m_alloc;
+    size_type m_size = 0;
+
+    Node* allocateNode(const value_type& value)
+    {
+        Node* newNode = std::allocator_traits<node_allocator_type>::allocate(m_alloc, 1);
+        std::allocator_traits<node_allocator_type>::construct(m_alloc, newNode, value);
         return newNode;
     }
 
-    void deallocateNode(ListNode<value_type>* node)
+public:
+    template <bool IsConst = false>
+    struct list_iterator
     {
-        if (node)
+    public:
+        using reference = std::conditional_t<IsConst, const value_type&, value_type&>;
+
+        list_iterator(BaseNode* current):
+            current(current)
         {
-            std::allocator_traits<allocator_type>::destroy(m_alloc, node);
-            std::allocator_traits<allocator_type>::deallocate(m_alloc, node, 1);
         }
+
+        list_iterator& operator--()
+        {
+            current = current->prev;
+            return *this;
+        }
+
+        list_iterator& operator++()
+        {
+            current = current->next;
+            return *this;
+        }
+
+        reference operator*() const
+        {
+            return static_cast<Node*>(current)->data;
+        }
+    private:
+        BaseNode* current;
+    };
+
+    using iterator          = list_iterator<false>;
+
+
+    iterator begin()
+    {
+        return list_iterator<false>(ptr->next);
     }
-};
 
-}  // namespace ft
+    iterator end()
+    {
+        return list_iterator<false>(ptr);
+    }
 
-#endif  // LIST_HPP
+    
+
+}; // class list
+
+
+} // namespace ft
+
+#endif

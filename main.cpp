@@ -341,6 +341,7 @@ int main()
     l.push_back(455);
     l.push_back(-100);
     l.push_back(22222);
+    // l.print_all();
 
     // for (auto it = l.begin(); it != l.end(); ++it)
     //     std::cout << *it << ' ';
@@ -358,15 +359,18 @@ int main()
     //     std::cout << *it << ' ';
     // std::cout << std::endl;
 
-    ft::list<int>::const_iterator cit = l.cbegin();
-    ft::list<int>::iterator it = ++l.begin();
+    // ft::list<int>::const_iterator cit = l.cbegin();
+    ft::list<int>::iterator it = ++++l.begin();
+    ft::list<int>::iterator it2 = --l.end();
+    std::cout << *it2 << std::endl;
+    std::cout << *it << std::endl;
 
-    cit = it;
-    cit = --cit;
+    // cit = it;
+    // cit = --cit;
 
-    std::cout << *cit << std::endl;
+    // std::cout << *cit << std::endl;
 
-    ft::list<A> l2;
+    // ft::list<A> l2;
 
     return 0;
 }

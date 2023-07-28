@@ -6,21 +6,44 @@
 namespace ft
 {
 
+struct BaseNode
+{
+    BaseNode* next = nullptr;
+    BaseNode* prev = nullptr;
+};
+
 template <typename T>
-struct ListNode
+struct ListNode : public BaseNode
 {
     T data;
-    ListNode* next;
-    ListNode* prev;
+    ListNode(const T& value) : data(value)
+    {}
 
-    ListNode(const T& value) : data(value), next(nullptr), prev(nullptr) {}
+    ListNode(const T& value, const ListNode<T>* next, const ListNode<T>* prev):
+        data(value)
+    {
+        this->next = next;
+        this->prev = prev;
+    }
 };
+
+// template <typename T>
+// struct ListNode
+// {
+//     T data;
+//     ListNode* next;
+//     ListNode* prev;
+
+//     ListNode(const T& value) : data(value), next(nullptr), prev(nullptr) {}
+// };
 
 template <class T, bool IsConst = false>
 struct list_iterator
 {
    private:
-    ListNode<T>* current;
+    // ListNode<T>* current;
+    BaseNode* current;
+    BaseNode* tail;
 
    public:
     using value_type = T;
@@ -38,13 +61,24 @@ struct list_iterator
     //         return *this;
     //     }
 
+    list_iterator(BaseNode* current, BaseNode* tail):
+        current(current), tail(tail)
+    {
+    }
+
+    
     operator list_iterator<value_type, true>() const { return list_iterator<value_type, true>(current); }
 
-    explicit list_iterator(ListNode<T>* node) : current(node) {}
+    explicit list_iterator(ListNode<T>* current, ListNode<T>* tail):
+        current(current), tail(tail)
+    {}
 
     //    explicit list_iterator(ListNode<T>* node, ListNode<T>* tail) : current(node), m_tail(tail) {}
 
-    reference operator*() const { return current->data; }
+    reference operator*() const
+    {
+        return static_cast<ListNode<T>*>(current)->data;
+    }
 
     bool operator==(const list_iterator& other) const { return current == other.current; }
 
@@ -58,7 +92,10 @@ struct list_iterator
 
     list_iterator& operator--()
     {
-        current = current->prev;
+        if (!current)
+            current = tail->prev;
+        else
+            current = current->prev;
         return *this;
     }
 };
