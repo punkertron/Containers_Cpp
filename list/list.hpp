@@ -109,7 +109,12 @@ public:
     struct list_iterator
     {
     public:
-        using reference = std::conditional_t<IsConst, const value_type&, value_type&>;
+        using reference         = std::conditional_t<IsConst, const value_type&, value_type&>;
+        using pointer           = std::conditional_t<IsConst, const value_type*, value_type*>;
+        using iterator_type     = BaseNode*;
+        using iterator_category = typename std::iterator_traits<iterator_type>::iterator_category;
+        using value_type        = typename std::iterator_traits<iterator_type>::value_type;
+        using difference_type   = typename std::iterator_traits<iterator_type>::difference_type;
 
         list_iterator(BaseNode* current):
             current(current)
@@ -130,7 +135,7 @@ public:
         list_iterator operator--(int)
         {
             list_iterator tmp = current;
-            --current;
+            current = current->prev;
             return tmp;
         }
 
@@ -138,6 +143,13 @@ public:
         {
             current = current->next;
             return *this;
+        }
+
+        list_iterator operator++(int)
+        {
+            list_iterator tmp = current;
+            current = current->next;
+            return tmp;
         }
 
         reference operator*() const
@@ -159,8 +171,10 @@ public:
         BaseNode* current;
     };
 
-    using iterator = list_iterator<false>;
-    using const_iterator = list_iterator<true>;
+    using iterator                  = list_iterator<false>;
+    using const_iterator            = list_iterator<true>;
+    using reverse_iterator          = std::reverse_iterator<iterator>;
+    using const_reverse_iterator    = std::reverse_iterator<const_iterator>;
 
 
     iterator begin()
@@ -168,14 +182,14 @@ public:
         return iterator(ptr->next);
     }
 
-    iterator end()
-    {
-        return iterator(ptr);
-    }
-
     const_iterator cbegin()
     {
         return const_iterator(ptr->next);
+    }
+
+    iterator end()
+    {
+        return iterator(ptr);
     }
 
     const_iterator cend()
@@ -183,9 +197,46 @@ public:
         return const_iterator(ptr);
     }
 
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(ptr);
+    }
+
+    const_reverse_iterator crbegin()
+    {
+        return const_reverse_iterator(ptr);
+    }
+
+    reverse_iterator rend()
+    {
+        return reverse_iterator(ptr->next);
+    }
+
+    const_reverse_iterator crend()
+    {
+        return const_reverse_iterator(ptr->next);
+    }
+
     size_type size() const
     {
         return m_size;
+    }
+
+    void pop_back()
+    {
+        BaseNode *tmp = ptr->prev;
+        if (m_size == 1)
+        {
+            ptr->prev = nullptr;
+            ptr->next = nullptr;
+        }
+        else
+        {
+            ptr->prev = ptr->prev->prev;
+            ptr->prev->next = ptr;
+            deallocateNode(tmp);
+        }
+        --m_size;
     }
 
 private:
