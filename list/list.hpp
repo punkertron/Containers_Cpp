@@ -127,6 +127,13 @@ public:
             return *this;
         }
 
+        list_iterator operator--(int)
+        {
+            list_iterator tmp = current;
+            --current;
+            return tmp;
+        }
+
         list_iterator& operator++()
         {
             current = current->next;
