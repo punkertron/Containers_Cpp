@@ -23,7 +23,21 @@ public:
     {
         ptr = new BaseNode;
     }
-    ~list() {}
+
+    ~list()
+    {
+        BaseNode *tmp;
+        BaseNode *save_ptr = ptr;
+        ptr = ptr->next;
+        while (m_size)
+        {
+            tmp = ptr;
+            ptr = ptr->next;
+            deallocateNode(tmp);
+            --m_size;
+        }
+        delete save_ptr;
+    }
 
     void push_back(const T& value)
     {
@@ -102,6 +116,11 @@ public:
         {
         }
 
+        operator list_iterator<true>() const
+        {
+            return list_iterator<true>(current);
+        }
+
         list_iterator& operator--()
         {
             current = current->prev;
@@ -118,24 +137,58 @@ public:
         {
             return static_cast<Node*>(current)->data;
         }
+
+        bool operator==(const list_iterator& other)
+        {
+            return current == other.current;
+        }
+
+        bool operator!=(const list_iterator &other)
+        {
+            return !(operator==(other));
+        }
+
     private:
         BaseNode* current;
     };
 
-    using iterator          = list_iterator<false>;
+    using iterator = list_iterator<false>;
+    using const_iterator = list_iterator<true>;
 
 
     iterator begin()
     {
-        return list_iterator<false>(ptr->next);
+        return iterator(ptr->next);
     }
 
     iterator end()
     {
-        return list_iterator<false>(ptr);
+        return iterator(ptr);
     }
 
-    
+    const_iterator cbegin()
+    {
+        return const_iterator(ptr->next);
+    }
+
+    const_iterator cend()
+    {
+        return const_iterator(ptr);
+    }
+
+    size_type size() const
+    {
+        return m_size;
+    }
+
+private:
+    void deallocateNode(BaseNode *node)
+    {
+        Node* del = static_cast<Node*>(node);
+        std::allocator_traits<node_allocator_type>::destroy(m_alloc, del);
+        std::allocator_traits<node_allocator_type>::deallocate(m_alloc, del, 1);
+    }
+
 
 }; // class list
 
