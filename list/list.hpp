@@ -11,13 +11,11 @@ template <class T, class Allocator = std::allocator<T>>
 class list
 {
 public:
-
-
     using value_type        = T;
     using allocator_type    = Allocator;
     using pointer           = typename std::allocator_traits<allocator_type>::pointer;
     using size_type         = std::size_t;
-   
+
 
     list()
     {
@@ -234,10 +232,25 @@ public:
         {
             ptr->prev = ptr->prev->prev;
             ptr->prev->next = ptr;
-            deallocateNode(tmp);
         }
+        deallocateNode(tmp);
         --m_size;
     }
+
+    // iterator insert( const_iterator pos, size_type count, const T& value )
+    // {
+    //     iterator tmp(ptr);
+
+    //     while (tmp->next != pos)
+    //         tmp = tmp->next;
+        
+    //     size_type i = 0;
+    //     while (i < count)
+    //     {
+    //         ;
+    //     }
+    //     return res;
+    // }
 
 private:
     void deallocateNode(BaseNode *node)
