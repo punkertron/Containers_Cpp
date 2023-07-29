@@ -167,6 +167,8 @@ public:
 
     private:
         BaseNode* current;
+
+        friend class list;
     };
 
     using iterator                  = list_iterator<false>;
@@ -237,20 +239,50 @@ public:
         --m_size;
     }
 
-    // iterator insert( const_iterator pos, size_type count, const T& value )
-    // {
-    //     iterator tmp(ptr);
+    iterator insert( const_iterator pos, size_type count, const T& value )
+    {
+        BaseNode* tmp = ptr;
+        BaseNode* before_node = pos.current;
 
-    //     while (tmp->next != pos)
-    //         tmp = tmp->next;
+        while (tmp->next != before_node)
+            tmp = tmp->next;
+
+        if (m_size == 0 || before_node == ptr->next)
+        {
+            for (size_type i = 0; i < count; ++i)
+            {
+                Node* newNode = allocateNode(value);
+                if (m_size)
+                {
+                    newNode->prev = before_node->prev;
+                    newNode->next = before_node;
+                    ptr->next = newNode;
+                    before_node->prev = newNode;
+                    before_node = newNode; // Update before_node to the current inserted node
+                }
+                else
+                {
+                    ptr->next = newNode;
+                    newNode->next = ptr;
+                    ptr->prev = newNode;
+                }
+                ++m_size;
+            }
+            return begin(); // Return iterator to the first inserted element
+        }
         
-    //     size_type i = 0;
-    //     while (i < count)
-    //     {
-    //         ;
-    //     }
-    //     return res;
-    // }
+        for (size_type i = 0; i < count; ++i)
+        {
+            Node* newNode = allocateNode(value);
+            newNode->prev = before_node->prev;
+            newNode->next = before_node;
+            before_node->prev->next = newNode;
+            before_node->prev = newNode;
+            before_node = newNode; // Update before_node to the current inserted node
+            ++m_size;
+        }
+        return iterator(before_node);
+    }
 
 private:
     void deallocateNode(BaseNode *node)

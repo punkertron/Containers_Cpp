@@ -367,7 +367,6 @@ int main()
     std::cout << *it2 << std::endl;
     std::cout << *it << std::endl;
 
-    
 
     std::cout << *cit << std::endl;
     cit = it;
@@ -382,6 +381,12 @@ int main()
 
     auto it3 = ++++l.rbegin();
     std::cout << *it3 << std::endl;
+
+    l.print_all();
+    auto it4 = l.insert(l.end(), 2, 0);
+    l.print_all();
+
+    std::cout << *(--it4) << std::endl;
 
     ft::list<A> l2;
 
