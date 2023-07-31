@@ -390,12 +390,15 @@ int main()
 
     std::cout << "front: " <<  l.front() << std::endl;
     const int& i = l.front();
+    l.pop_front();
+    std::cout << "front: " <<  l.front() << std::endl;
 
     std::cout << "back: " <<  l.back() << std::endl;
     l.push_back(150);
     std::cout << "back: " <<  l.back() << std::endl;
 
     ft::list<A> l2;
+    std::cout << "empty(): " << l.empty() << " and " << l2.empty() << std::endl;
 
     return 0;
 }

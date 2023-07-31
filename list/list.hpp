@@ -306,6 +306,20 @@ public:
         return *(--end());
     }
 
+    bool empty() const noexcept
+    {
+        return !m_size;
+    }
+
+    void pop_front()
+    {
+        BaseNode *del = ptr->next;
+        ptr->next->next->prev = ptr;
+        ptr->next = ptr->next->next;
+        deallocateNode(del);
+        --m_size;
+    }
+
 private:
     void deallocateNode(BaseNode *node)
     {
