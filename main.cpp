@@ -388,6 +388,9 @@ int main()
 
     std::cout << *(--it4) << std::endl;
 
+    std::cout << "front: " <<  l.front() << std::endl;
+    const int& i = l.front();
+
     ft::list<A> l2;
 
     return 0;

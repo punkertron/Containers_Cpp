@@ -15,6 +15,8 @@ public:
     using allocator_type    = Allocator;
     using pointer           = typename std::allocator_traits<allocator_type>::pointer;
     using size_type         = std::size_t;
+    using reference         = value_type&;
+    using const_reference   = const value_type&;
 
 
     list()
@@ -182,7 +184,7 @@ public:
         return iterator(ptr->next);
     }
 
-    const_iterator cbegin()
+    const_iterator cbegin() const
     {
         return const_iterator(ptr->next);
     }
@@ -192,7 +194,7 @@ public:
         return iterator(ptr);
     }
 
-    const_iterator cend()
+    const_iterator cend() const
     {
         return const_iterator(ptr);
     }
@@ -202,7 +204,7 @@ public:
         return reverse_iterator(ptr);
     }
 
-    const_reverse_iterator crbegin()
+    const_reverse_iterator crbegin() const
     {
         return const_reverse_iterator(ptr);
     }
@@ -212,7 +214,7 @@ public:
         return reverse_iterator(ptr->next);
     }
 
-    const_reverse_iterator crend()
+    const_reverse_iterator crend() const
     {
         return const_reverse_iterator(ptr->next);
     }
@@ -282,6 +284,18 @@ public:
             ++m_size;
         }
         return iterator(before_node);
+    }
+
+    reference front()
+    {
+        std::cerr << "Boo" << std::endl;
+        return *begin();
+    }
+
+    const_reference front() const
+    {
+        std::cerr << "H" << std::endl;
+        return *cbegin();
     }
 
 private:
