@@ -26,6 +26,15 @@ public:
     }
 };
 
+template <typename T>
+struct Compare
+{
+    bool operator()(const T& a, const T& b) const
+    {
+        return a > b;
+    }
+};
+
 int main()
 {
 
@@ -399,6 +408,24 @@ int main()
 
     ft::list<A> l2;
     std::cout << "empty(): " << l.empty() << " and " << l2.empty() << std::endl;
+
+    
+    l.push_back(-42);
+    std::cout << "before sort: " << std::endl;
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl << "After sort using custom comparator: " << std::endl;
+
+    l.sort(Compare<int>());
+    
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl << "After sort using default comparator: " << std::endl;
+
+    l.sort();
+     for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
 
     return 0;
 }

@@ -320,6 +320,45 @@ public:
         --m_size;
     }
 
+    // don't have capacity
+    void resize( size_type count )
+    {
+        (void) count;
+        return ;
+    }
+
+    void resize( size_type count, const value_type& value )
+    {
+        (void) count;
+        (void) value;
+        return ;
+    }
+
+
+    // SORT - merge sort
+    
+    template< class Compare >
+    void sort( Compare comp )
+    {
+        ptr->next = merge_sort(ptr->next, comp);
+        BaseNode *tmp = ptr->next, *prev = ptr;
+        while (tmp->next && tmp->next != ptr)
+        {
+            tmp->prev = prev;
+            prev->next = tmp;
+            prev = prev->next;
+            tmp = tmp->next;
+        }
+        ptr->prev = tmp;
+        tmp->next = ptr;
+
+    }
+
+    void sort()
+    {
+        sort(std::less<int>());
+    }
+
 private:
     void deallocateNode(BaseNode *node)
     {
@@ -328,6 +367,61 @@ private:
         std::allocator_traits<node_allocator_type>::deallocate(m_alloc, del, 1);
     }
 
+    template< class Compare >
+    BaseNode* merge(BaseNode* left, BaseNode* right, Compare comp)
+    {
+        BaseNode res;
+        BaseNode* tmp = &res;
+
+        while (left && right && left != ptr && right != ptr)
+        {
+            // if (comp.operator<(static_cast<Node*>(left)->data, static_cast<Node*>(right)->data))
+            if (comp(static_cast<Node*>(left)->data, static_cast<Node*>(right)->data))
+            {
+                tmp->next = left;
+                left = left->next;
+            }
+            else
+            {
+                tmp->next = right;
+                right = right->next;
+            }
+            tmp = tmp->next;
+        }
+
+        if (left && left != ptr && left->next != ptr)
+            tmp->next = left;
+        else
+            tmp->next = right;
+        return res.next;
+    }
+
+    BaseNode *get_mid(BaseNode* p)
+    {
+        BaseNode *slow = p, *fast = p->next;
+        while (fast && fast != ptr && fast->next && fast->next != ptr)
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow;
+    }
+
+    template< class Compare >
+    BaseNode* merge_sort(BaseNode* begin_list, Compare comp)
+    {
+        if (!begin_list || begin_list == ptr || !(begin_list->next) || begin_list->next == ptr)
+            return begin_list;
+        BaseNode* left = begin_list;
+        BaseNode* right = get_mid(begin_list);
+        
+        BaseNode* tmp = right->next;
+        right->next = nullptr;
+        right = tmp;
+        left = merge_sort(left, comp);
+        right = merge_sort(right, comp);
+        return merge(left, right, comp);
+    }
 
 }; // class list
 
