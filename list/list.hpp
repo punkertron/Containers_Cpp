@@ -288,14 +288,22 @@ public:
 
     reference front()
     {
-        std::cerr << "Boo" << std::endl;
         return *begin();
     }
 
     const_reference front() const
     {
-        std::cerr << "H" << std::endl;
         return *cbegin();
+    }
+
+    reference back()
+    {
+        return *(--end());
+    }
+
+    const_reference back() const
+    {
+        return *(--end());
     }
 
 private:
