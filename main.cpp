@@ -13,7 +13,6 @@ void pointer_func(const int* p, std::size_t size)
     std::cout << '\n';
 }
 
-
 class A
 {
 private:
@@ -34,6 +33,7 @@ struct Compare
         return a > b;
     }
 };
+
 
 int main()
 {
@@ -423,7 +423,24 @@ int main()
     std::cout << std::endl << "After sort using default comparator: " << std::endl;
 
     l.sort();
-     for (auto i : l)
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+    // l.reverse();
+    // for (auto i : l)
+    //     std::cout << i << ' ';
+    // std::cout << std::endl;
+
+
+    ft::list<int> l3;
+    l3.push_back(-111);
+    l3.push_back(0);
+    l3.push_back(12);
+    l3.push_back(56);
+
+    l.merge(l3);
+    for (auto i : l)
         std::cout << i << ' ';
     std::cout << std::endl;
 

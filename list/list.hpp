@@ -26,6 +26,12 @@ public:
 
     ~list()
     {
+        clear();
+        delete ptr;
+    }
+
+    void clear()
+    {
         BaseNode *tmp;
         BaseNode *save_ptr = ptr;
         ptr = ptr->next;
@@ -36,7 +42,7 @@ public:
             deallocateNode(tmp);
             --m_size;
         }
-        delete save_ptr;
+        ptr = save_ptr;
     }
 
     void push_back(const T& value)
@@ -356,7 +362,46 @@ public:
 
     void sort()
     {
-        sort(std::less<int>());
+        sort(std::less<value_type>());
+    }
+
+    void reverse() noexcept
+    {
+        size_type i = 0;
+        BaseNode *tmp = ptr, *tmp2;
+        while (i != m_size + 1)
+        {
+            // std::cout << static_cast<Node*>(tmp->next)->data << std::endl;
+            tmp2 = tmp->next;
+            tmp->next = tmp->prev;
+            tmp->prev = tmp2;
+            tmp = tmp2;
+            ++i;
+        }
+        // ptr->next = tmp->prev;
+        // ptr->prev = tmp2;
+    }
+
+    template < class Compare >
+    void merge( list& other, Compare comp )
+    {
+        m_size += other.size();
+        ptr->next = merge(ptr->next, other.ptr->next, ptr, other.ptr, comp, true);
+        BaseNode *tmp = ptr->next, *prev = ptr;
+        while (tmp->next && tmp->next != ptr)
+        {
+            tmp->prev = prev;
+            prev->next = tmp;
+            prev = prev->next;
+            tmp = tmp->next;
+        }
+        ptr->prev = tmp;
+        tmp->next = ptr;
+    }
+
+    void merge( list& other )
+    {
+        merge(other, std::less<value_type>());
     }
 
 private:
@@ -368,14 +413,13 @@ private:
     }
 
     template< class Compare >
-    BaseNode* merge(BaseNode* left, BaseNode* right, Compare comp)
+    BaseNode* merge(BaseNode* left, BaseNode* right, BaseNode* end_left, BaseNode* end_right, Compare comp, bool create_new = false)
     {
         BaseNode res;
         BaseNode* tmp = &res;
 
-        while (left && right && left != ptr && right != ptr)
+        while (left && right && left != end_left && right != end_right)
         {
-            // if (comp.operator<(static_cast<Node*>(left)->data, static_cast<Node*>(right)->data))
             if (comp(static_cast<Node*>(left)->data, static_cast<Node*>(right)->data))
             {
                 tmp->next = left;
@@ -383,13 +427,19 @@ private:
             }
             else
             {
-                tmp->next = right;
+                if (create_new)
+                {
+                    Node* newNode = allocateNode(static_cast<Node*>(right)->data);
+                    tmp->next = newNode;
+                }
+                else
+                    tmp->next = right;
                 right = right->next;
             }
             tmp = tmp->next;
         }
 
-        if (left && left != ptr && left->next != ptr)
+        if (left && left != end_left && left->next != end_left)
             tmp->next = left;
         else
             tmp->next = right;
@@ -420,7 +470,7 @@ private:
         right = tmp;
         left = merge_sort(left, comp);
         right = merge_sort(right, comp);
-        return merge(left, right, comp);
+        return merge(left, right, ptr, ptr, comp);
     }
 
 }; // class list
