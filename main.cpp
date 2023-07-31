@@ -427,12 +427,6 @@ int main()
         std::cout << i << ' ';
     std::cout << std::endl;
 
-    // l.reverse();
-    // for (auto i : l)
-    //     std::cout << i << ' ';
-    // std::cout << std::endl;
-
-
     ft::list<int> l3;
     l3.push_back(-111);
     l3.push_back(0);
@@ -440,6 +434,12 @@ int main()
     l3.push_back(56);
 
     l.merge(l3);
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+
+    l.reverse();
     for (auto i : l)
         std::cout << i << ' ';
     std::cout << std::endl;
