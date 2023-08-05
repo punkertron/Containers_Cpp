@@ -10,19 +10,15 @@ namespace ft
 template <class T, class Allocator = std::allocator<T>>
 class list
 {
-public:
-    using value_type        = T;
-    using allocator_type    = Allocator;
-    using pointer           = typename std::allocator_traits<allocator_type>::pointer;
-    using size_type         = std::size_t;
-    using reference         = value_type&;
-    using const_reference   = const value_type&;
+   public:
+    using value_type      = T;
+    using allocator_type  = Allocator;
+    using pointer         = typename std::allocator_traits<allocator_type>::pointer;
+    using size_type       = std::size_t;
+    using reference       = value_type&;
+    using const_reference = const value_type&;
 
-
-    list()
-    {
-        ptr = new BaseNode;
-    }
+    list() { ptr = new BaseNode; }
 
     ~list()
     {
@@ -32,9 +28,9 @@ public:
 
     void clear()
     {
-        BaseNode *tmp;
-        BaseNode *save_ptr = ptr;
-        ptr = ptr->next;
+        BaseNode* tmp;
+        BaseNode* save_ptr = ptr;
+        ptr                = ptr->next;
         while (m_size)
         {
             tmp = ptr;
@@ -50,24 +46,24 @@ public:
         Node* newNode = allocateNode(value);
         if (m_size)
         {
-            newNode->prev = ptr->prev;
-            newNode->next = ptr;
+            newNode->prev   = ptr->prev;
+            newNode->next   = ptr;
             ptr->prev->next = newNode;
-            ptr->prev = newNode;
+            ptr->prev       = newNode;
         }
         else
         {
-            ptr->next = newNode;
+            ptr->next     = newNode;
             newNode->next = ptr;
-            ptr->prev = newNode;
+            ptr->prev     = newNode;
         }
         ++m_size;
     }
 
     void print_all()
     {
-        BaseNode *tmp = ptr;
-        size_type i = m_size;
+        BaseNode* tmp = ptr;
+        size_type i   = m_size;
 
         while (i)
         {
@@ -78,25 +74,21 @@ public:
         std::cerr << std::endl;
     }
 
-
-
-private:
-
+   private:
     struct Node;
-    using node_allocator_type =
-        typename std::allocator_traits<allocator_type>::template rebind_alloc<Node>;
+    using node_allocator_type = typename std::allocator_traits<allocator_type>::template rebind_alloc<Node>;
 
     struct BaseNode
     {
-        BaseNode *prev = nullptr;
-        BaseNode *next = nullptr;
+        BaseNode* prev = nullptr;
+        BaseNode* next = nullptr;
     };
 
     struct Node : BaseNode
     {
         value_type data;
 
-        Node(const value_type& value): data(value) {}
+        Node(const value_type& value) : data(value) {}
     };
 
     BaseNode* ptr;
@@ -110,11 +102,11 @@ private:
         return newNode;
     }
 
-public:
+   public:
     template <bool IsConst = false>
     struct list_iterator
     {
-    public:
+       public:
         using reference         = std::conditional_t<IsConst, const value_type&, value_type&>;
         using pointer           = std::conditional_t<IsConst, const value_type*, value_type*>;
         using iterator_type     = BaseNode*;
@@ -122,15 +114,9 @@ public:
         using value_type        = typename std::iterator_traits<iterator_type>::value_type;
         using difference_type   = typename std::iterator_traits<iterator_type>::difference_type;
 
-        list_iterator(BaseNode* current):
-            current(current)
-        {
-        }
+        list_iterator(BaseNode* current) : current(current) {}
 
-        operator list_iterator<true>() const
-        {
-            return list_iterator<true>(current);
-        }
+        operator list_iterator<true>() const { return list_iterator<true>(current); }
 
         list_iterator& operator--()
         {
@@ -141,7 +127,7 @@ public:
         list_iterator operator--(int)
         {
             list_iterator tmp = current;
-            current = current->prev;
+            current           = current->prev;
             return tmp;
         }
 
@@ -154,85 +140,48 @@ public:
         list_iterator operator++(int)
         {
             list_iterator tmp = current;
-            current = current->next;
+            current           = current->next;
             return tmp;
         }
 
-        reference operator*() const
-        {
-            return static_cast<Node*>(current)->data;
-        }
+        reference operator*() const { return static_cast<Node*>(current)->data; }
 
-        bool operator==(const list_iterator& other)
-        {
-            return current == other.current;
-        }
+        bool operator==(const list_iterator& other) { return current == other.current; }
 
-        bool operator!=(const list_iterator &other)
-        {
-            return !(operator==(other));
-        }
+        bool operator!=(const list_iterator& other) { return !(operator==(other)); }
 
-    private:
+       private:
         BaseNode* current;
 
         friend class list;
     };
 
-    using iterator                  = list_iterator<false>;
-    using const_iterator            = list_iterator<true>;
-    using reverse_iterator          = std::reverse_iterator<iterator>;
-    using const_reverse_iterator    = std::reverse_iterator<const_iterator>;
+    using iterator               = list_iterator<false>;
+    using const_iterator         = list_iterator<true>;
+    using reverse_iterator       = std::reverse_iterator<iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+    iterator begin() { return iterator(ptr->next); }
 
-    iterator begin()
-    {
-        return iterator(ptr->next);
-    }
+    const_iterator cbegin() const { return const_iterator(ptr->next); }
 
-    const_iterator cbegin() const
-    {
-        return const_iterator(ptr->next);
-    }
+    iterator end() { return iterator(ptr); }
 
-    iterator end()
-    {
-        return iterator(ptr);
-    }
+    const_iterator cend() const { return const_iterator(ptr); }
 
-    const_iterator cend() const
-    {
-        return const_iterator(ptr);
-    }
+    reverse_iterator rbegin() { return reverse_iterator(ptr); }
 
-    reverse_iterator rbegin()
-    {
-        return reverse_iterator(ptr);
-    }
+    const_reverse_iterator crbegin() const { return const_reverse_iterator(ptr); }
 
-    const_reverse_iterator crbegin() const
-    {
-        return const_reverse_iterator(ptr);
-    }
+    reverse_iterator rend() { return reverse_iterator(ptr->next); }
 
-    reverse_iterator rend()
-    {
-        return reverse_iterator(ptr->next);
-    }
+    const_reverse_iterator crend() const { return const_reverse_iterator(ptr->next); }
 
-    const_reverse_iterator crend() const
-    {
-        return const_reverse_iterator(ptr->next);
-    }
-
-    size_type size() const
-    {
-        return m_size;
-    }
+    size_type size() const { return m_size; }
 
     void pop_back()
     {
-        BaseNode *tmp = ptr->prev;
+        BaseNode* tmp = ptr->prev;
         if (m_size == 1)
         {
             ptr->prev = nullptr;
@@ -240,16 +189,16 @@ public:
         }
         else
         {
-            ptr->prev = ptr->prev->prev;
+            ptr->prev       = ptr->prev->prev;
             ptr->prev->next = ptr;
         }
         deallocateNode(tmp);
         --m_size;
     }
 
-    iterator insert( const_iterator pos, size_type count, const T& value )
+    iterator insert(const_iterator pos, size_type count, const T& value)
     {
-        BaseNode* tmp = ptr;
+        BaseNode* tmp         = ptr;
         BaseNode* before_node = pos.current;
 
         while (tmp->next != before_node)
@@ -262,158 +211,160 @@ public:
                 Node* newNode = allocateNode(value);
                 if (m_size)
                 {
-                    newNode->prev = before_node->prev;
-                    newNode->next = before_node;
-                    ptr->next = newNode;
+                    newNode->prev     = before_node->prev;
+                    newNode->next     = before_node;
+                    ptr->next         = newNode;
                     before_node->prev = newNode;
-                    before_node = newNode; // Update before_node to the current inserted node
+                    before_node       = newNode;  // Update before_node to the current inserted node
                 }
                 else
                 {
-                    ptr->next = newNode;
+                    ptr->next     = newNode;
                     newNode->next = ptr;
-                    ptr->prev = newNode;
+                    ptr->prev     = newNode;
                 }
                 ++m_size;
             }
-            return begin(); // Return iterator to the first inserted element
+            return begin();  // Return iterator to the first inserted element
         }
-        
+
         for (size_type i = 0; i < count; ++i)
         {
-            Node* newNode = allocateNode(value);
-            newNode->prev = before_node->prev;
-            newNode->next = before_node;
+            Node* newNode           = allocateNode(value);
+            newNode->prev           = before_node->prev;
+            newNode->next           = before_node;
             before_node->prev->next = newNode;
-            before_node->prev = newNode;
-            before_node = newNode; // Update before_node to the current inserted node
+            before_node->prev       = newNode;
+            before_node             = newNode;  // Update before_node to the current inserted node
             ++m_size;
         }
         return iterator(before_node);
     }
 
-    reference front()
-    {
-        return *begin();
-    }
+    reference front() { return *begin(); }
 
-    const_reference front() const
-    {
-        return *cbegin();
-    }
+    const_reference front() const { return *cbegin(); }
 
-    reference back()
-    {
-        return *(--end());
-    }
+    reference back() { return *(--end()); }
 
-    const_reference back() const
-    {
-        return *(--end());
-    }
+    const_reference back() const { return *(--end()); }
 
-    bool empty() const noexcept
-    {
-        return !m_size;
-    }
+    bool empty() const noexcept { return !m_size; }
 
     void pop_front()
     {
-        BaseNode *del = ptr->next;
+        BaseNode* del         = ptr->next;
         ptr->next->next->prev = ptr;
-        ptr->next = ptr->next->next;
+        ptr->next             = ptr->next->next;
         deallocateNode(del);
         --m_size;
     }
 
     // don't have capacity
-    void resize( size_type count )
+    void resize(size_type count)
     {
-        (void) count;
-        return ;
+        (void)count;
+        return;
     }
 
-    void resize( size_type count, const value_type& value )
+    void resize(size_type count, const value_type& value)
     {
-        (void) count;
-        (void) value;
-        return ;
+        (void)count;
+        (void)value;
+        return;
     }
-
 
     // SORT - merge sort
-    
-    template< class Compare >
-    void sort( Compare comp )
+
+    template <class Compare>
+    void sort(Compare comp)
     {
-        ptr->next = merge_sort(ptr->next, comp);
+        ptr->next     = merge_sort(ptr->next, comp);
         BaseNode *tmp = ptr->next, *prev = ptr;
         while (tmp->next && tmp->next != ptr)
         {
-            tmp->prev = prev;
+            tmp->prev  = prev;
             prev->next = tmp;
-            prev = prev->next;
-            tmp = tmp->next;
+            prev       = prev->next;
+            tmp        = tmp->next;
         }
         ptr->prev = tmp;
         tmp->next = ptr;
-
     }
 
-    void sort()
-    {
-        sort(std::less<value_type>());
-    }
+    void sort() { sort(std::less<value_type>()); }
 
+    // https://www.alphacodingskills.com/ds/notes/circular-doubly-linked-list-reverse-the-list.php
     void reverse() noexcept
     {
-        size_type i = 0;
-        BaseNode *tmp = ptr, *tmp2;
-        while (i != m_size + 1)
+        // 1. If head is not null create three nodes
+        //   prevNode - pointing to head,
+        //   tempNode - pointing to head,
+        //   curNode - pointing to next of head
+
+        if (ptr != NULL)
         {
-            // std::cout << static_cast<Node*>(tmp->next)->data << std::endl;
-            tmp2 = tmp->next;
-            tmp->next = tmp->prev;
-            tmp->prev = tmp2;
-            tmp = tmp2;
-            ++i;
+            BaseNode* prevNode = ptr;
+            BaseNode* tempNode = ptr;
+            BaseNode* curNode  = ptr->next;
+
+            // 2. assign next and previous of prevNode
+            //    as itself to make the first node as last
+            //    node of the reversed list
+            prevNode->next = prevNode;
+            prevNode->prev = prevNode;
+
+            while (curNode != ptr)
+            {
+                // 3. While the curNode is not head adjust links
+                //    (unlink curNode and link it to the reversed list
+                //    from front and modify curNode and prevNode)
+                tempNode = curNode->next;
+
+                curNode->next  = prevNode;
+                prevNode->prev = curNode;
+                ptr->next      = curNode;
+                curNode->prev  = ptr;
+
+                prevNode = curNode;
+                curNode  = tempNode;
+            }
+
+            // 4. Make prevNode (last node) as head ---- MODIFIED
+            ptr->prev = prevNode;
         }
-        // ptr->next = tmp->prev;
-        // ptr->prev = tmp2;
     }
 
-    template < class Compare >
-    void merge( list& other, Compare comp )
+    template <class Compare>
+    void merge(list& other, Compare comp)
     {
         m_size += other.size();
-        ptr->next = merge(ptr->next, other.ptr->next, ptr, other.ptr, comp, true);
+        ptr->next     = merge(ptr->next, other.ptr->next, ptr, other.ptr, comp, true);
         BaseNode *tmp = ptr->next, *prev = ptr;
         while (tmp->next && tmp->next != ptr)
         {
-            tmp->prev = prev;
+            tmp->prev  = prev;
             prev->next = tmp;
-            prev = prev->next;
-            tmp = tmp->next;
+            prev       = prev->next;
+            tmp        = tmp->next;
         }
         ptr->prev = tmp;
         tmp->next = ptr;
     }
 
-    void merge( list& other )
-    {
-        merge(other, std::less<value_type>());
-    }
+    void merge(list& other) { merge(other, std::less<value_type>()); }
 
-private:
-    void deallocateNode(BaseNode *node)
+   private:
+    void deallocateNode(BaseNode* node)
     {
         Node* del = static_cast<Node*>(node);
         std::allocator_traits<node_allocator_type>::destroy(m_alloc, del);
         std::allocator_traits<node_allocator_type>::deallocate(m_alloc, del, 1);
     }
 
-    template< class Compare >
-    BaseNode* merge(BaseNode* left, BaseNode* right, BaseNode* end_left, BaseNode* end_right, Compare comp, bool create_new = false)
+    template <class Compare>
+    BaseNode* merge(BaseNode* left, BaseNode* right, BaseNode* end_left, BaseNode* end_right, Compare comp,
+                    bool create_new = false)
     {
         BaseNode res;
         BaseNode* tmp = &res;
@@ -423,14 +374,14 @@ private:
             if (comp(static_cast<Node*>(left)->data, static_cast<Node*>(right)->data))
             {
                 tmp->next = left;
-                left = left->next;
+                left      = left->next;
             }
             else
             {
                 if (create_new)
                 {
                     Node* newNode = allocateNode(static_cast<Node*>(right)->data);
-                    tmp->next = newNode;
+                    tmp->next     = newNode;
                 }
                 else
                     tmp->next = right;
@@ -446,7 +397,7 @@ private:
         return res.next;
     }
 
-    BaseNode *get_mid(BaseNode* p)
+    BaseNode* get_mid(BaseNode* p)
     {
         BaseNode *slow = p, *fast = p->next;
         while (fast && fast != ptr && fast->next && fast->next != ptr)
@@ -457,25 +408,24 @@ private:
         return slow;
     }
 
-    template< class Compare >
+    template <class Compare>
     BaseNode* merge_sort(BaseNode* begin_list, Compare comp)
     {
         if (!begin_list || begin_list == ptr || !(begin_list->next) || begin_list->next == ptr)
             return begin_list;
-        BaseNode* left = begin_list;
+        BaseNode* left  = begin_list;
         BaseNode* right = get_mid(begin_list);
-        
+
         BaseNode* tmp = right->next;
-        right->next = nullptr;
-        right = tmp;
-        left = merge_sort(left, comp);
-        right = merge_sort(right, comp);
+        right->next   = nullptr;
+        right         = tmp;
+        left          = merge_sort(left, comp);
+        right         = merge_sort(right, comp);
         return merge(left, right, ptr, ptr, comp);
     }
 
-}; // class list
+};  // class list
 
-
-} // namespace ft
+}  // namespace ft
 
 #endif

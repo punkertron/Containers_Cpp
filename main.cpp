@@ -434,12 +434,16 @@ int main()
     l3.push_back(56);
 
     l.merge(l3);
+
+    std::cerr << "Before reverse()" << std::endl;
     for (auto i : l)
         std::cout << i << ' ';
     std::cout << std::endl;
 
 
     l.reverse();
+
+    std::cerr << "After reverse()" << std::endl;
     for (auto i : l)
         std::cout << i << ' ';
     std::cout << std::endl;
