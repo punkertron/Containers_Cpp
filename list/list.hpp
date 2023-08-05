@@ -81,42 +81,42 @@ class list
         ++m_size;
     }
 
-    void push_front( const T& value )
+    void push_front(const T& value)
     {
         Node* newNode = allocateNode(value);
         if (m_size)
         {
-            newNode->prev = ptr;
-            newNode->next = ptr->next;
-            ptr->next = newNode;
+            newNode->prev       = ptr;
+            newNode->next       = ptr->next;
+            ptr->next           = newNode;
             newNode->next->prev = newNode;
         }
         else
         {
-            ptr->next = newNode;
+            ptr->next     = newNode;
             newNode->next = ptr;
             newNode->prev = ptr;
-            ptr->prev = newNode;
+            ptr->prev     = newNode;
         }
         ++m_size;
     }
 
-    void push_front( T&& value )
+    void push_front(T&& value)
     {
         Node* newNode = allocateNode(std::move(value));
         if (m_size)
         {
-            newNode->prev = ptr;
-            newNode->next = ptr->next;
-            ptr->next = newNode;
+            newNode->prev       = ptr;
+            newNode->next       = ptr->next;
+            ptr->next           = newNode;
             newNode->next->prev = newNode;
         }
         else
         {
-            ptr->next = newNode;
+            ptr->next     = newNode;
             newNode->next = ptr;
             newNode->prev = ptr;
-            ptr->prev = newNode;
+            ptr->prev     = newNode;
         }
         ++m_size;
     }
@@ -422,7 +422,7 @@ class list
 
     void merge(list& other) { merge(other, std::less<value_type>()); }
 
-    iterator erase( const_iterator first, const_iterator last )
+    iterator erase(const_iterator first, const_iterator last)
     {
         BaseNode *tf = first.current, *tl = last.current;
         if (first == last)
@@ -436,14 +436,14 @@ class list
             --m_size;
             tf = tmp;
         }
-        tl->prev = saveBegin;
+        tl->prev        = saveBegin;
         saveBegin->next = tl;
         return iterator(tl);
     }
 
-    iterator erase( const_iterator pos )
+    iterator erase(const_iterator pos)
     {
-        iterator second ((++pos).current);
+        iterator second((++pos).current);
         return erase(--pos, second);
     }
 
