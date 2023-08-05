@@ -55,7 +55,68 @@ class list
         {
             ptr->next     = newNode;
             newNode->next = ptr;
+            newNode->prev = ptr;
             ptr->prev     = newNode;
+        }
+        ++m_size;
+    }
+
+    void push_back(T&& value)
+    {
+        Node* newNode = allocateNode(std::move(value));
+        if (m_size)
+        {
+            newNode->prev   = ptr->prev;
+            newNode->next   = ptr;
+            ptr->prev->next = newNode;
+            ptr->prev       = newNode;
+        }
+        else
+        {
+            ptr->next     = newNode;
+            newNode->next = ptr;
+            newNode->prev = ptr;
+            ptr->prev     = newNode;
+        }
+        ++m_size;
+    }
+
+    void push_front( const T& value )
+    {
+        Node* newNode = allocateNode(value);
+        if (m_size)
+        {
+            newNode->prev = ptr;
+            newNode->next = ptr->next;
+            ptr->next = newNode;
+            newNode->next->prev = newNode;
+        }
+        else
+        {
+            ptr->next = newNode;
+            newNode->next = ptr;
+            newNode->prev = ptr;
+            ptr->prev = newNode;
+        }
+        ++m_size;
+    }
+
+    void push_front( T&& value )
+    {
+        Node* newNode = allocateNode(std::move(value));
+        if (m_size)
+        {
+            newNode->prev = ptr;
+            newNode->next = ptr->next;
+            ptr->next = newNode;
+            newNode->next->prev = newNode;
+        }
+        else
+        {
+            ptr->next = newNode;
+            newNode->next = ptr;
+            newNode->prev = ptr;
+            ptr->prev = newNode;
         }
         ++m_size;
     }
@@ -99,6 +160,13 @@ class list
     {
         Node* newNode = std::allocator_traits<node_allocator_type>::allocate(m_alloc, 1);
         std::allocator_traits<node_allocator_type>::construct(m_alloc, newNode, value);
+        return newNode;
+    }
+
+    Node* allocateNode(value_type&& value)
+    {
+        Node* newNode = std::allocator_traits<node_allocator_type>::allocate(m_alloc, 1);
+        std::allocator_traits<node_allocator_type>::construct(m_alloc, newNode, std::move(value));
         return newNode;
     }
 
@@ -353,6 +421,31 @@ class list
     }
 
     void merge(list& other) { merge(other, std::less<value_type>()); }
+
+    iterator erase( const_iterator first, const_iterator last )
+    {
+        BaseNode *tf = first.current, *tl = last.current;
+        if (first == last)
+            return iterator(tf);
+
+        BaseNode *saveBegin = tf->prev, *tmp;
+        while (tf != tl)
+        {
+            tmp = tf->next;
+            deallocateNode(tf);
+            --m_size;
+            tf = tmp;
+        }
+        tl->prev = saveBegin;
+        saveBegin->next = tl;
+        return iterator(tl);
+    }
+
+    iterator erase( const_iterator pos )
+    {
+        iterator second ((++pos).current);
+        return erase(--pos, second);
+    }
 
    private:
     void deallocateNode(BaseNode* node)

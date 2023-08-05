@@ -448,5 +448,32 @@ int main()
         std::cout << i << ' ';
     std::cout << std::endl;
 
+    l.push_front(-1);
+    l.push_front(-2);
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+    ft::list<std::string> l4;
+    std::string temp1("Hello");
+    std::string temp2("World");
+    l4.push_front(std::move(temp1));
+    l4.push_front(std::move(temp2));
+
+    for (auto s : l4)
+        std::cout << s << ' ';
+    std::cout << std::endl;
+
+    // l.insert(l.begin(), 1, 1);
+    l.erase(l.begin(), ++++++l.begin());
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+    l.erase(l.begin());
+    for (auto i : l)
+        std::cout << i << ' ';
+    std::cout << std::endl;
+
+
     return 0;
 }

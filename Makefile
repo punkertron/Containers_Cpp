@@ -12,7 +12,7 @@ INCLUDE		= $(INC:%=-I ./%)
 DEPS		= ${OBJS:%.o=%.d}
 
 CXX			= clang++
-CXXFLAGS	= -std=c++17 #-g3 -fsanitize=address -fsanitize=leak -fsanitize=undefined
+CXXFLAGS	= -std=c++17 #-g -fsanitize=address -fsanitize=leak -fsanitize=undefined
 
 RM			= rm -rf
 
