@@ -179,7 +179,7 @@ class list
         using pointer           = std::conditional_t<IsConst, const value_type*, value_type*>;
         using iterator_type     = BaseNode*;
         using iterator_category = typename std::iterator_traits<iterator_type>::iterator_category;
-        using value_type        = typename std::iterator_traits<iterator_type>::value_type;
+        // using value_type        = typename std::iterator_traits<iterator_type>::value_type;
         using difference_type   = typename std::iterator_traits<iterator_type>::difference_type;
 
         list_iterator(BaseNode* current) : current(current) {}

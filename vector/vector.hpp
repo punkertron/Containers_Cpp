@@ -308,6 +308,10 @@ class vector
                 AllocTraits::construct(m_alloc, m_arr + j, std::move(*(m_arr + j)));
             AllocTraits::construct(m_alloc, m_arr + i, std::move(value));
         }
+        else
+        {
+            AllocTraits::construct(m_alloc, m_arr, std::move(value));
+        }
         ++m_size;
         pos = m_arr + i;
         return pos;
