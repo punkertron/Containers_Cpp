@@ -60,16 +60,16 @@ struct vec_iterator
         return it;
     }
 
-    vec_iterator& operator+(size_type n)
+    vec_iterator operator+(const difference_type& n)
     {
-        m_ptr += n;
-        return *this;
+        vec_iterator v(m_ptr + n);
+        return v;
     }
 
-    vec_iterator& operator-(size_type n)
+    vec_iterator& operator-(const difference_type& n)
     {
-        m_ptr -= n;
-        return *this;
+        vec_iterator v(m_ptr - n);
+        return v;
     }
 
     vec_iterator& operator+=(size_type n)

@@ -295,6 +295,8 @@ class vector
         return pos;
     }
 
+    iterator insert(const_iterator pos, const T& value) { return insert(pos, 1, value); }
+
     iterator insert(const_iterator pos, T&& value)
     {
         size_type i = pos - m_arr;
@@ -340,13 +342,25 @@ class vector
         return m_arr + i;
     }
 
-    iterator erase(const_iterator pos) { return erase(pos, pos + 1); }
+    iterator erase(const_iterator pos)
+    {
+        if (pos == end())
+            return pos;
+        return erase(pos, pos + 1);
+    }
 
     iterator erase(const_iterator first, const_iterator last)
     {
         if (first == end() || first == last)
             return last;
-        size_type to_erase = last - first, i = first - m_arr;
+        size_type to_erase = last - first;
+        size_type i        = first - m_arr;
+
+        bool last_is_end = last == end();
+        size_type to_move;
+        if (!last_is_end)
+            to_move = end() - last;
+
         while (first != last)
         {
             AllocTraits::destroy(m_alloc, &(*first));
@@ -356,11 +370,16 @@ class vector
 
         if (last == end() + to_erase)
             return end();
-        size_type to_move = end() - m_arr + i - to_erase, j = 0;
-        while (j != to_move)
+
+        if (!last_is_end)
         {
-            AllocTraits::construct(m_alloc, m_arr + i + j, std::move(*(m_arr + i + to_erase + j)));
-            ++j;
+            size_type j = 0;
+
+            while (j != to_move)
+            {
+                AllocTraits::construct(m_alloc, m_arr + i + j, std::move(*(m_arr + i + to_erase + j)));
+                ++j;
+            }
         }
         return m_arr + i;
     }
@@ -412,8 +431,18 @@ class vector
 
     void resize(size_type count)
     {
-        value_type t;
-        resize(count, t);
+        // value_type t;
+        // resize(count, t);
+
+        while (count < m_size)
+        {
+            --m_size;
+            AllocTraits::destroy(m_alloc, m_arr + m_size);
+        }
+        while (count > m_size)
+        {
+            push_back(value_type());
+        }
     }
 
     void swap(vector& other) { ; }
