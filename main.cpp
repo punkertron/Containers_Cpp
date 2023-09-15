@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <iostream>
 #include <list>
+#include <memory>
 #include <random>
 #include <stack>
 #include <string>
@@ -9,6 +10,7 @@
 #include "doctest.h"
 #include "list.hpp"
 #include "stack.hpp"
+#include "unique_ptr.hpp"
 #include "vector.hpp"
 
 void pointer_func(const int* p, std::size_t size)
@@ -25,14 +27,25 @@ class A
     A();
 
    public:
-    A(const std::string& s) { std::cerr << "From A const. : " << s << std::endl; }
+    A(const std::string& s)
+    {
+        std::cerr << "From A const. : " << s << std::endl;
+    }
 };
 
 template <typename T>
 struct Compare
 {
-    bool operator()(const T& a, const T& b) const { return a > b; }
+    bool operator()(const T& a, const T& b) const
+    {
+        return a > b;
+    }
 };
+
+void test_bla()
+{
+    std::unique_ptr<int> p;
+}
 
 TEST_SUITE("vector")
 {
@@ -272,6 +285,76 @@ TEST_SUITE("vector")
     }
 
 }  // TEST_SUITE("vector")
+
+TEST_SUITE("uniqie_ptr")
+{
+    template <typename T>
+    struct D
+    {
+        int number      = 5;
+        int number2     = 10;
+        std::string abc = "abc!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        void operator()(T* ptr)
+        {
+            delete ptr;
+        }
+    };
+
+    TEST_CASE("basics")
+    {
+        ft::unique_ptr<int> p(new int(5));
+        std::unique_ptr<int> p_stl(new int(5));
+        CHECK(sizeof(p) == sizeof(p_stl));
+
+        ft::unique_ptr<int, D<int>> p2(new int(5));
+        std::unique_ptr<int, D<int>> p2_stl(new int(5));
+        CHECK(sizeof(p2) == sizeof(p2_stl));
+    }
+
+    struct test_struct
+    {
+        int i         = 42;
+        double pi     = 3.14;
+        float f       = 4.0f;
+        const char* s = "Hello, world!";
+
+        friend bool operator==(const test_struct& a, const test_struct& b);
+    };
+
+    bool operator==(const test_struct& a, const test_struct& b)
+    {
+        return a.i == b.i && (std::abs(a.pi - b.pi) < 1.0 / 10000000) && (std::abs(a.f - b.f) < 1.0 / 10000000) &&
+               (std::strcmp(a.s, b.s) == 0);
+    }
+
+    TEST_CASE("Observers")
+    {
+        test_struct* ptr     = new test_struct();
+        test_struct* ptr_stl = new test_struct();
+
+        ft::unique_ptr<test_struct> p(ptr);
+        std::unique_ptr<test_struct> p_stl(ptr_stl);
+
+        CHECK(sizeof(p) == sizeof(p_stl));
+        CHECK(p.get()->i == p_stl.get()->i);
+        CHECK(p.get()->pi == doctest::Approx(3.14));
+        CHECK(p.get()->f == doctest::Approx(4.0f));
+        CHECK(std::strcmp(p.get()->s, "Hello, world!") == 0);
+
+        CHECK_FALSE(!p);
+        ft::unique_ptr<float> pf;
+        CHECK_FALSE(pf);
+
+        test_struct t;
+        CHECK(*p == t);
+
+        t.f = 5.0f;
+        CHECK_FALSE(*p == t);
+
+        // TODO: add Modifiers
+    }
+
+}  // TEST_SUITE("uniqie_ptr")
 
 // int main()
 // {

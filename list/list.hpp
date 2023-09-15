@@ -18,7 +18,10 @@ class list
     using reference       = value_type&;
     using const_reference = const value_type&;
 
-    list() { ptr = new BaseNode; }
+    list()
+    {
+        ptr = new BaseNode;
+    }
 
     ~list()
     {
@@ -149,7 +152,9 @@ class list
     {
         value_type data;
 
-        Node(const value_type& value) : data(value) {}
+        Node(const value_type& value) : data(value)
+        {
+        }
     };
 
     BaseNode* ptr;
@@ -182,9 +187,14 @@ class list
         // using value_type        = typename std::iterator_traits<iterator_type>::value_type;
         using difference_type = typename std::iterator_traits<iterator_type>::difference_type;
 
-        list_iterator(BaseNode* current) : current(current) {}
+        list_iterator(BaseNode* current) : current(current)
+        {
+        }
 
-        operator list_iterator<true>() const { return list_iterator<true>(current); }
+        operator list_iterator<true>() const
+        {
+            return list_iterator<true>(current);
+        }
 
         list_iterator& operator--()
         {
@@ -212,11 +222,20 @@ class list
             return tmp;
         }
 
-        reference operator*() const { return static_cast<Node*>(current)->data; }
+        reference operator*() const
+        {
+            return static_cast<Node*>(current)->data;
+        }
 
-        bool operator==(const list_iterator& other) { return current == other.current; }
+        bool operator==(const list_iterator& other)
+        {
+            return current == other.current;
+        }
 
-        bool operator!=(const list_iterator& other) { return !(operator==(other)); }
+        bool operator!=(const list_iterator& other)
+        {
+            return !(operator==(other));
+        }
 
        private:
         BaseNode* current;
@@ -229,23 +248,50 @@ class list
     using reverse_iterator       = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    iterator begin() { return iterator(ptr->next); }
+    iterator begin()
+    {
+        return iterator(ptr->next);
+    }
 
-    const_iterator cbegin() const { return const_iterator(ptr->next); }
+    const_iterator cbegin() const
+    {
+        return const_iterator(ptr->next);
+    }
 
-    iterator end() { return iterator(ptr); }
+    iterator end()
+    {
+        return iterator(ptr);
+    }
 
-    const_iterator cend() const { return const_iterator(ptr); }
+    const_iterator cend() const
+    {
+        return const_iterator(ptr);
+    }
 
-    reverse_iterator rbegin() { return reverse_iterator(ptr); }
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(ptr);
+    }
 
-    const_reverse_iterator crbegin() const { return const_reverse_iterator(ptr); }
+    const_reverse_iterator crbegin() const
+    {
+        return const_reverse_iterator(ptr);
+    }
 
-    reverse_iterator rend() { return reverse_iterator(ptr->next); }
+    reverse_iterator rend()
+    {
+        return reverse_iterator(ptr->next);
+    }
 
-    const_reverse_iterator crend() const { return const_reverse_iterator(ptr->next); }
+    const_reverse_iterator crend() const
+    {
+        return const_reverse_iterator(ptr->next);
+    }
 
-    size_type size() const { return m_size; }
+    size_type size() const
+    {
+        return m_size;
+    }
 
     void pop_back()
     {
@@ -309,15 +355,30 @@ class list
         return iterator(before_node);
     }
 
-    reference front() { return *begin(); }
+    reference front()
+    {
+        return *begin();
+    }
 
-    const_reference front() const { return *cbegin(); }
+    const_reference front() const
+    {
+        return *cbegin();
+    }
 
-    reference back() { return *(--end()); }
+    reference back()
+    {
+        return *(--end());
+    }
 
-    const_reference back() const { return *(--end()); }
+    const_reference back() const
+    {
+        return *(--end());
+    }
 
-    bool empty() const noexcept { return !m_size; }
+    bool empty() const noexcept
+    {
+        return !m_size;
+    }
 
     void pop_front()
     {
@@ -360,7 +421,10 @@ class list
         tmp->next = ptr;
     }
 
-    void sort() { sort(std::less<value_type>()); }
+    void sort()
+    {
+        sort(std::less<value_type>());
+    }
 
     // https://www.alphacodingskills.com/ds/notes/circular-doubly-linked-list-reverse-the-list.php
     void reverse() noexcept
@@ -420,7 +484,10 @@ class list
         tmp->next = ptr;
     }
 
-    void merge(list& other) { merge(other, std::less<value_type>()); }
+    void merge(list& other)
+    {
+        merge(other, std::less<value_type>());
+    }
 
     iterator erase(const_iterator first, const_iterator last)
     {

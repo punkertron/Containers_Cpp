@@ -91,16 +91,16 @@ class vector
         m_arr = p;
     }
 
-    vector(vector&& other)
-        : m_arr(other.m_arr), m_size(other.m_size), m_capacity(other.m_capacity), m_alloc(std::move(other.m_alloc))
+    vector(vector&& other) :
+        m_arr(other.m_arr), m_size(other.m_size), m_capacity(other.m_capacity), m_alloc(std::move(other.m_alloc))
     {
         other.m_arr      = nullptr;
         other.m_size     = 0;
         other.m_capacity = 0;
     }
 
-    vector(std::initializer_list<T> init, const Allocator& alloc = Allocator())
-        : m_size(0), m_capacity(sizeof(init)), m_alloc(alloc)
+    vector(std::initializer_list<T> init, const Allocator& alloc = Allocator()) :
+        m_size(0), m_capacity(sizeof(init)), m_alloc(alloc)
     {
         m_arr = AllocTraits::allocate(m_alloc, m_capacity);
 
@@ -164,36 +164,60 @@ class vector
             push_back(i);
     }
 
-    allocator_type get_allocator() const noexcept { return m_alloc; }
+    allocator_type get_allocator() const noexcept
+    {
+        return m_alloc;
+    }
 
     // Element access
     reference at(size_type pos)
     {
-        if (pos < 0 || pos >= m_size)
+        if (pos >= m_size)
             throw std::out_of_range("pos not in range of this vector");
         return m_arr[pos];
     }
 
     const_reference at(size_type pos) const
     {
-        if (pos < 0 || pos >= m_size)
+        if (pos >= m_size)
             throw std::out_of_range("pos not in range of this vector");
         return m_arr[pos];
     }
 
-    reference operator[](size_type pos) { return m_arr[pos]; }
+    reference operator[](size_type pos)
+    {
+        return m_arr[pos];
+    }
 
-    const_reference operator[](size_type pos) const { return m_arr[pos]; }
+    const_reference operator[](size_type pos) const
+    {
+        return m_arr[pos];
+    }
 
-    reference front() { return m_arr[0]; }
+    reference front()
+    {
+        return m_arr[0];
+    }
 
-    const_reference front() const { return m_arr[0]; }
+    const_reference front() const
+    {
+        return m_arr[0];
+    }
 
-    reference back() { return m_arr[m_size - 1]; }
+    reference back()
+    {
+        return m_arr[m_size - 1];
+    }
 
-    const_reference back() const { return m_arr[m_size - 1]; }
+    const_reference back() const
+    {
+        return m_arr[m_size - 1];
+    }
 
-    T* data() noexcept { return m_arr; }
+    T* data() noexcept
+    {
+        return m_arr;
+    }
 
     const T* data() const noexcept
     {
@@ -202,28 +226,61 @@ class vector
     }
 
     // Iterators
-    iterator begin() { return iterator(m_arr); }
+    iterator begin()
+    {
+        return iterator(m_arr);
+    }
 
-    const_iterator cbegin() const noexcept { return const_iterator(m_arr); }
+    const_iterator cbegin() const noexcept
+    {
+        return const_iterator(m_arr);
+    }
 
-    iterator end() { return iterator(m_arr + m_size); }
+    iterator end()
+    {
+        return iterator(m_arr + m_size);
+    }
 
-    const_iterator cend() const noexcept { return const_iterator(m_arr + m_size); }
+    const_iterator cend() const noexcept
+    {
+        return const_iterator(m_arr + m_size);
+    }
 
-    reverse_iterator rbegin() { return reverse_iterator(m_arr); }
+    reverse_iterator rbegin()
+    {
+        return reverse_iterator(m_arr);
+    }
 
-    const_reverse_iterator rcbegin() const noexcept { return const_reverse_iterator(m_arr); }
+    const_reverse_iterator rcbegin() const noexcept
+    {
+        return const_reverse_iterator(m_arr);
+    }
 
-    reverse_iterator rend() { return reverse_iterator(m_arr + m_size); }
+    reverse_iterator rend()
+    {
+        return reverse_iterator(m_arr + m_size);
+    }
 
-    const_reverse_iterator rcend() const noexcept { return const_reverse_iterator(m_arr + m_size); }
+    const_reverse_iterator rcend() const noexcept
+    {
+        return const_reverse_iterator(m_arr + m_size);
+    }
 
     // Capacity
-    bool empty() const noexcept { return !m_size; }
+    bool empty() const noexcept
+    {
+        return !m_size;
+    }
 
-    size_type size() const noexcept { return m_size; }
+    size_type size() const noexcept
+    {
+        return m_size;
+    }
 
-    size_type max_size() const noexcept { return std::numeric_limits<difference_type>::max(); }
+    size_type max_size() const noexcept
+    {
+        return std::numeric_limits<difference_type>::max();
+    }
 
     void reserve(size_type new_cap)
     {
@@ -244,7 +301,10 @@ class vector
         m_capacity = new_cap;
     }
 
-    size_type capacity() const noexcept { return m_capacity; }
+    size_type capacity() const noexcept
+    {
+        return m_capacity;
+    }
 
     void shrink_to_fit()
     {
@@ -295,7 +355,10 @@ class vector
         return pos;
     }
 
-    iterator insert(const_iterator pos, const T& value) { return insert(pos, 1, value); }
+    iterator insert(const_iterator pos, const T& value)
+    {
+        return insert(pos, 1, value);
+    }
 
     iterator insert(const_iterator pos, T&& value)
     {
@@ -445,7 +508,10 @@ class vector
         }
     }
 
-    void swap(vector& other) { ; }
+    void swap(vector& other)
+    {
+        ;
+    }
 
    private:
     value_type* m_arr;

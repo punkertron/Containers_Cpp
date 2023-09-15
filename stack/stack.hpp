@@ -21,10 +21,18 @@ class stack
 
    public:
     stack() = default;
-    explicit stack(const Container &cont) : c(cont) {}
-    explicit stack(Container &&cont) : c(std::move(cont)) {}
-    stack(const stack &s) : c(s.c) {}
-    stack(stack &&s) : c(std::move(s.c)) {}
+    explicit stack(const Container &cont) : c(cont)
+    {
+    }
+    explicit stack(Container &&cont) : c(std::move(cont))
+    {
+    }
+    stack(const stack &s) : c(s.c)
+    {
+    }
+    stack(stack &&s) : c(std::move(s.c))
+    {
+    }
 
     ~stack() = default;
 
@@ -41,19 +49,37 @@ class stack
     }
 
     // Element access
-    reference top() { return c.back(); }
+    reference top()
+    {
+        return c.back();
+    }
 
-    const_reference top() const { return c.back(); }
+    const_reference top() const
+    {
+        return c.back();
+    }
 
     // Capacity
-    bool empty() const { return c.empty(); }
+    bool empty() const
+    {
+        return c.empty();
+    }
 
-    size_type size() const { return c.size(); }
+    size_type size() const
+    {
+        return c.size();
+    }
 
     // Modifiers
-    void push(const value_type &val) { c.push_back(val); }
+    void push(const value_type &val)
+    {
+        c.push_back(val);
+    }
 
-    void push(value_type &&value) { c.push_back(std::move(value)); }
+    void push(value_type &&value)
+    {
+        c.push_back(std::move(value));
+    }
 
     template <class... Args>
     void emplace(Args &&...args)
@@ -61,7 +87,10 @@ class stack
         c.emplace_back(std::forward<Args>(args)...);
     }
 
-    void pop() { c.pop_back(); }
+    void pop()
+    {
+        c.pop_back();
+    }
 
     void swap(stack &other)  // noexcept(/* see below */);
     {
