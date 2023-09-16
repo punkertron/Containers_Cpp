@@ -35,7 +35,21 @@ class unique_ptr
         other.ptr = nullptr;
     }
 
-    // unique_ptr( pointer p, /* see below */ d1 ) noexcept;
+    template <typename Del = deleter_type,
+            typename = std::enable_if_t<std::is_constructible_v<Del> > >
+    unique_ptr( pointer p, const deleter_type& d ) noexcept:
+        m_ptr(p), m_deleter(d)
+    {
+        std::cerr << "here!" << std::endl;
+    }
+
+    template <typename Del = deleter_type,
+            typename = std::enable_if_t<std::is_move_constructible_v<Del> > >
+    unique_ptr( pointer p, deleter_type&& d ) noexcept:
+        m_ptr(p), m_deleter(std::move(d))
+    {
+        std::cerr << "MOVE!" << std::endl;
+    }
 
     // template<typename U, typename E,
     // std::enable_if_t<std::is_convertible_v<U*, T*>, bool> = false,
