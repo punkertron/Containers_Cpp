@@ -3,10 +3,12 @@
 
 #include <deque>
 
+#include "vector.hpp"
+
 namespace ft
 {
 // REPLACE IN THE FUTURE
-template <class T, class Container = std::deque<T> >
+template <class T, class Container = ft::vector<T> /*std::deque<T>*/>
 class stack
 {
    public:
@@ -78,24 +80,25 @@ class stack
 
     void push(value_type &&value)
     {
+        // std::cerr << "HERE" << std::endl;
         c.push_back(std::move(value));
     }
 
-    template <class... Args>
-    void emplace(Args &&...args)
-    {
-        c.emplace_back(std::forward<Args>(args)...);
-    }
+    // template <class... Args>
+    // void emplace(Args &&...args)
+    // {
+    //     c.emplace_back(std::forward<Args>(args)...);
+    // }
 
     void pop()
     {
         c.pop_back();
     }
 
-    void swap(stack &other)  // noexcept(/* see below */);
-    {
-        std::swap(c, other.c);
-    }
+    // void swap(stack &other)  // noexcept(/* see below */);
+    // {
+    //     std::swap(c, other.c);
+    // }
 
     template <class U, class F>
     inline friend bool operator<(stack<U, F> &x, stack<U, F> &y);

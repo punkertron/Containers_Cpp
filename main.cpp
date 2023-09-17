@@ -372,6 +372,110 @@ TEST_SUITE("uniqie_ptr")
 
 }  // TEST_SUITE("uniqie_ptr")
 
+TEST_SUITE("stack")
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(-1000, 1000);
+
+    TEST_CASE("stack basics")
+    {
+        ft::stack<int> s;
+        std::stack<int> s_stl;
+
+        SUBCASE("Capacity")
+        {
+            CHECK(s.size() == s_stl.size());
+            CHECK(s.empty());
+
+            s.push(5);
+            s_stl.push(5);
+            CHECK(s.size() == s_stl.size());
+            CHECK_FALSE(s.empty());
+
+            s.pop();
+            s_stl.pop();
+        }
+
+        SUBCASE("Modifieres")
+        {
+            for (int i = 0; i < 15; ++i)
+            {
+                int x = dist(rng);
+                s.push(x);
+                s_stl.push(x);
+            }
+
+            // INFO("current iteration of loop:");
+            for (std::size_t i = 0; i < 15; ++i)
+            {
+                // CAPTURE(i);
+                CHECK(s.top() == s_stl.top());
+                s.pop();
+                s_stl.pop();
+            }
+        }
+        CHECK(s.empty());
+        CHECK(s.size() == s_stl.size());
+    }
+
+    TEST_CASE("Operators")
+    {
+        ft::stack<int> s;
+        ft::stack<int> s2;
+        for (int i = 0; i < 15; ++i)
+        {
+            int x = dist(rng);
+            s.push(x);
+            s2.push(x);
+        }
+
+        CHECK(s == s2);
+        CHECK_FALSE(s != s2);
+        CHECK_FALSE(s < s2);
+        CHECK(s <= s2);
+        CHECK_FALSE(s > s2);
+        CHECK(s >= s2);
+
+        s2.push(20);
+
+        CHECK_FALSE(s == s2);
+        CHECK(s != s2);
+        CHECK(s < s2);
+        CHECK(s <= s2);
+        CHECK_FALSE(s > s2);
+        CHECK_FALSE(s >= s2);
+
+        s2.pop();
+
+        CHECK(s == s2);
+        CHECK_FALSE(s != s2);
+        CHECK_FALSE(s < s2);
+        CHECK(s <= s2);
+        CHECK_FALSE(s > s2);
+        CHECK(s >= s2);
+
+        s2.pop();
+
+        CHECK_FALSE(s == s2);
+        CHECK(s != s2);
+        CHECK_FALSE(s < s2);
+        CHECK_FALSE(s <= s2);
+        CHECK(s > s2);
+        CHECK(s >= s2);
+
+        ft::stack<int> s3;
+
+        CHECK_FALSE(s == s3);
+        CHECK(s != s3);
+        CHECK_FALSE(s < s3);
+        CHECK_FALSE(s <= s3);
+        CHECK(s > s3);
+        CHECK(s >= s3);
+    }
+
+}  // TEST_SUITE("stack")
+
 // int main()
 // {
 
