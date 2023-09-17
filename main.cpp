@@ -335,16 +335,21 @@ TEST_SUITE("uniqie_ptr")
         ft::unique_ptr<test_struct> p(ptr);
         std::unique_ptr<test_struct> p_stl(ptr_stl);
 
-        test_struct* test1     = new test_struct();
-        test_struct* test2     = new test_struct();
-        test_struct* test3     = new test_struct();
+        test_struct* test1 = new test_struct();
+        test_struct* test2 = new test_struct();
+        test_struct* test3 = new test_struct();
+        test_struct* test4 = new test_struct();
 
         struct D<test_struct> del_struct;
         std::unique_ptr<test_struct, D<test_struct>> bla(test1, del_struct);
 
         ft::unique_ptr<test_struct, D<test_struct>> p_bla(test2, del_struct);
-        ft::unique_ptr<test_struct, D<test_struct>> p_bll_2(test3, D<test_struct>());
+        ft::unique_ptr<test_struct, D<test_struct>> p_bla_2(test3, D<test_struct>());
 
+        struct D<test_struct> del_struct2;
+        ft::unique_ptr<test_struct, D<test_struct>> p_bla_3(test4, std::move(del_struct2));
+
+        // ft::unique_ptr<test_struct> p_bla_4(std::move(p_bla));
 
         CHECK(sizeof(p) == sizeof(p_stl));
         CHECK(p.get()->i == p_stl.get()->i);

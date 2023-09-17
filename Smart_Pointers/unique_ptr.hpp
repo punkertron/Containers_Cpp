@@ -26,39 +26,44 @@ class unique_ptr
     {
     }
 
-    explicit unique_ptr(pointer ptr) : m_ptr(ptr)
+    explicit unique_ptr(pointer ptr) noexcept : m_ptr(ptr)
     {
     }
 
-    unique_ptr(unique_ptr&& other) noexcept : m_ptr(other.ptr)
+    unique_ptr(unique_ptr&& other) noexcept : m_ptr(other.m_ptr), m_deleter(other.m_deleter)
     {
-        other.ptr = nullptr;
+        other.m_ptr = nullptr;
     }
 
-    template <typename Del = deleter_type,
-            typename = std::enable_if_t<std::is_constructible_v<Del> > >
-    unique_ptr( pointer p, const deleter_type& d ) noexcept:
-        m_ptr(p), m_deleter(d)
+    template <typename = std::enable_if_t<std::is_constructible_v<deleter_type> > >
+    unique_ptr(pointer p, const deleter_type& d) noexcept : m_ptr(p), m_deleter(d)
     {
-        std::cerr << "here!" << std::endl;
+        // std::cerr << "copy" << std::endl;
     }
 
-    template <typename Del = deleter_type,
-            typename = std::enable_if_t<std::is_move_constructible_v<Del> > >
-    unique_ptr( pointer p, deleter_type&& d ) noexcept:
+    template <typename = std::enable_if_t<std::is_move_constructible_v<deleter_type> > >
+    unique_ptr(pointer p, std::enable_if_t<!std::is_lvalue_reference_v<deleter_type>, deleter_type&&> d) noexcept :
         m_ptr(p), m_deleter(std::move(d))
     {
-        std::cerr << "MOVE!" << std::endl;
+        // std::cerr << "move" << std::endl;
     }
 
-    // template<typename U, typename E,
-    // std::enable_if_t<std::is_convertible_v<U*, T*>, bool> = false,
-    // std::enable_if_t<std::is_reference_v<deleter_type> && std::is_same_v<E, deleter_type>,
-    //                  bool> = false>
-    // unique_ptr( unique_ptr<U, E>&& other ) noexcept:
-    //     m_ptr(other.release()), m_deleter(other.m_deleter)
-    // {
-    // }
+    template <typename DelUnref = std::remove_reference_t<deleter_type> >
+    unique_ptr(pointer p, std::enable_if_t<std::is_lvalue_reference_v<deleter_type>, DelUnref&&> d) = delete;
+
+    template <typename U, typename E, std::enable_if_t<std::is_convertible_v<U*, T*>, bool> = false,
+              std::enable_if_t<std::is_reference_v<deleter_type> && std::is_same_v<E, deleter_type>, bool> = false>
+    unique_ptr(unique_ptr<U, E>&& other) noexcept : m_ptr(other.release()), m_deleter(other.m_deleter)
+    {
+        // std::cerr << "&& - copy deleter" << std::endl;
+    }
+
+    template <typename U, typename E, std::enable_if_t<std::is_convertible_v<U*, T*>, bool> = false,
+              std::enable_if_t<!std::is_reference_v<deleter_type> && std::is_convertible_v<E, deleter_type>, bool> = false>
+    unique_ptr(unique_ptr<U, E>&& other) noexcept : m_ptr(other.release()), m_deleter(std::move(other.m_deleter))
+    {
+        // std::cerr << "&& - move deleter" << std::endl;
+    }
 
     unique_ptr(const unique_ptr& /*other*/)            = delete;
     unique_ptr& operator=(const unique_ptr& /*other*/) = delete;
