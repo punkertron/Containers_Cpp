@@ -490,13 +490,39 @@ TEST_SUITE("List")
     //     }
     // };
 
-    TEST_CASE("basics")
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, 10);
+
+
+    void check_list_data(ft::list<std::string>& l, std::list<std::string>& l_stl)
+    {
+        REQUIRE(l.size() == l_stl.size());
+        auto sit = l_stl.cbegin(), end = l_stl.cend();
+        auto it = l.cbegin();
+        while (sit != end)
+        {
+            REQUIRE(*it == *sit);
+            // std::cerr << *it << std::endl;
+            // std::cerr << *sit << std::endl;
+            ++sit;
+            ++it;
+        }
+        CHECK(l.size() == l_stl.size());
+        CHECK(l.back() == l_stl.back());
+        CHECK(l.front() == l_stl.front());
+    };
+
+    TEST_CASE("basics: capacity, element access")
     {
         ft::list<std::string> l;
         std::list<std::string> l_stl;
 
+        CHECK(l.empty());
+
         l.push_back("string");
         l_stl.push_back("string");
+        CHECK_FALSE(l.empty());
 
         CHECK(l.size() == l_stl.size());
         CHECK(l.back() == l_stl.back());
@@ -507,16 +533,13 @@ TEST_SUITE("List")
 
         CHECK(l.size() == l_stl.size());
 
-        std::random_device dev;
-        std::mt19937 rng(dev());
-        std::uniform_int_distribution<std::mt19937::result_type> dist(0, 10);
-
         for (int i = 0; i < 15; ++i)
         {
             int n = dist(rng);
             int r = dist(rng);
-            std::string s(65 + r * 2, n);
-            std::string s2(80 + r, n);
+            std::string s(n + 1, 65 + r * 2);
+            // std::cerr << "char = " << (char)(65 + r * 2) << ". string = " << s << std::endl;
+            std::string s2(n + 1, 80 + r);
             std::string s3(s2);
 
             l.push_back(s);
@@ -525,25 +548,65 @@ TEST_SUITE("List")
             l_stl.push_back(std::move(s3));
         }
 
-        auto lit = l.begin();
-        for (auto it = l_stl.begin(), end = l_stl.end(); it != end; ++it, ++lit)
+        check_list_data(l, l_stl);
+    }
+
+    TEST_CASE("Operations")
+    {
+        ft::list<std::string> l;
+        std::list<std::string> l_stl;
+        for (int i = 0; i < 15; ++i)
         {
-            CHECK(*lit == *it);
+            int n = dist(rng);
+            int r = dist(rng);
+            std::string s(n + 1, 65 + r * 2);
+            std::string s2(n + 1, 80 + r);
+            std::string s3(s2);
+
+            l.push_back(s);
+            l_stl.push_back(s);
+            l.push_back(std::move(s2));  // FIXME: mode doesn't work?
+            l_stl.push_back(std::move(s3));
         }
-        CHECK(l.size() == l_stl.size());
-        CHECK(l.back() == l_stl.back());
-        CHECK(l.front() == l_stl.front());
+
+        check_list_data(l, l_stl);
 
         l.sort();
         l_stl.sort();
-        lit = l.begin();
-        for (auto it = l_stl.begin(), end = l_stl.end(); it != end; ++it, ++lit)
-        {
-            CHECK(*lit == *it);
-        }
-        CHECK(l.size() == l_stl.size());
-        CHECK(l.back() == l_stl.back());
-        CHECK(l.front() == l_stl.front());
+
+        check_list_data(l, l_stl);
+
+        // std::cerr << l.back().size() << std::endl;
+        // std::cerr << l_stl.back().size() << std::endl;
+
+        l.reverse();
+        l_stl.reverse();
+
+        check_list_data(l, l_stl);
+        
+        ft::list<std::string> l2;
+        l2.push_back("123");
+        l2.push_back("TTT");
+        l2.push_back("FF");
+        l2.push_back("GGG");
+        l2.push_back("g46Fgqq");
+
+        std::list<std::string> l2_stl;
+        l2_stl.push_back("123");
+        l2_stl.push_back("TTT");
+        l2_stl.push_back("FF");
+        l2_stl.push_back("GGG");
+        l2_stl.push_back("g46Fgqq");
+
+        l.merge(l2);
+        l_stl.merge(l2_stl);
+
+        // check_list_data(l, l_stl);
+
+        // l.sort();
+        // l_stl.sort();
+
+        // check_list_data(l, l_stl);
     }
 
 }  // TEST_SUITE("List")

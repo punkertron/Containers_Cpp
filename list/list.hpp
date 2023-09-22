@@ -463,7 +463,7 @@ class list
             }
 
             // 4. Make prevNode (last node) as head ---- MODIFIED
-            ptr->prev = prevNode;
+            ptr = tempNode;
         }
     }
 
@@ -479,6 +479,7 @@ class list
             prev->next = tmp;
             prev       = prev->next;
             tmp        = tmp->next;
+            std::cerr << 1;
         }
         ptr->prev = tmp;
         tmp->next = ptr;
