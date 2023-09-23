@@ -584,24 +584,30 @@ TEST_SUITE("List")
 
         check_list_data(l, l_stl);
         
-        ft::list<std::string> l2;
-        l2.push_back("123");
-        l2.push_back("TTT");
-        l2.push_back("FF");
-        l2.push_back("GGG");
-        l2.push_back("g46Fgqq");
+        // ft::list<std::string> l2;
+        // l2.push_back("123");
+        // l2.push_back("TTT");
+        // l2.push_back("FF");
+        // l2.push_back("GGG");
+        // l2.push_back("g46Fgqq");
 
-        std::list<std::string> l2_stl;
-        l2_stl.push_back("123");
-        l2_stl.push_back("TTT");
-        l2_stl.push_back("FF");
-        l2_stl.push_back("GGG");
-        l2_stl.push_back("g46Fgqq");
+        // std::list<std::string> l2_stl;
+        // l2_stl.push_back("123");
+        // l2_stl.push_back("TTT");
+        // l2_stl.push_back("FF");
+        // l2_stl.push_back("GGG");
+        // l2_stl.push_back("g46Fgqq");
 
-        l.merge(l2);
-        l_stl.merge(l2_stl);
-
+        // l.merge(l2);
+        // l_stl.merge(l2_stl);
         // check_list_data(l, l_stl);
+
+        l.pop_front();
+        l.pop_front();
+        l_stl.pop_front();
+        l_stl.pop_front();
+
+        check_list_data(l, l_stl);
 
         // l.sort();
         // l_stl.sort();
