@@ -9,6 +9,7 @@
 
 #include "doctest.h"
 #include "list.hpp"
+#include "shared_ptr.hpp"
 #include "stack.hpp"
 #include "unique_ptr.hpp"
 #include "vector.hpp"
@@ -494,8 +495,7 @@ TEST_SUITE("List")
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, 10);
 
-
-    void check_list_data(ft::list<std::string>& l, std::list<std::string>& l_stl)
+    void check_list_data(ft::list<std::string> & l, std::list<std::string> & l_stl)
     {
         REQUIRE(l.size() == l_stl.size());
         auto sit = l_stl.cbegin(), end = l_stl.cend();
@@ -583,7 +583,7 @@ TEST_SUITE("List")
         l_stl.reverse();
 
         check_list_data(l, l_stl);
-        
+
         // ft::list<std::string> l2;
         // l2.push_back("123");
         // l2.push_back("TTT");
@@ -616,3 +616,19 @@ TEST_SUITE("List")
     }
 
 }  // TEST_SUITE("List")
+
+TEST_SUITE("shared_ptr")
+{
+    TEST_CASE("basics")
+    {
+        std::shared_ptr<int> s_stl(new int(5));
+        // std::shared_ptr<int> s_stl2(std::move(s_stl));
+
+        ft::shared_ptr<int> s(new int(5));
+        ft::shared_ptr<int> s2(s);
+
+        // ft::shared_ptr<int> s3(ft::shared_ptr<int> (new int(10)));
+        ft::shared_ptr<int> s3(std::move(s2));
+    }
+
+}  // TEST_SUITE("shared_ptr")
